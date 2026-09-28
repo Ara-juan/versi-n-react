@@ -1,0 +1,87 @@
+/* Página de administración de productos (reutiliza el estilo de perfil.css) */
+.admin-main {
+  max-width: 1000px;
+}
+
+.admin-main .profile-card {
+  background: rgba(0, 0, 0, 0.85);
+  padding: 35px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.admin-main .profile-card h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.admin-main .profile-card p.subtitle {
+  color: #a0a0a0;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.admin-main .section-title {
+  color: #00ffcc;
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-main .form-label {
+  font-size: 13px;
+  color: #d1d1d1;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.admin-main .form-control {
+  background-color: rgba(20, 20, 20, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.admin-main .form-control:focus {
+  border-color: #007BFF;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+.admin-main select.form-control option {
+  background-color: #141414;
+  color: white;
+}
+
+.admin-main .btn-save {
+  width: 100%;
+  padding: 12px;
+  background: #007BFF;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.admin-main .btn-save:hover {
+  background: #0056b3;
+  color: white;
+}
+
+.admin-main .btn-save:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.admin-main .table-responsive {
+  max-height: 500px;
+  overflow-y: auto;
+}

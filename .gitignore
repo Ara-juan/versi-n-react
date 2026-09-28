@@ -1,0 +1,13 @@
+# Dependencias
+node_modules/
+backend/node_modules/
+
+# Build de producción
+dist/
+
+# Variables de entorno (no subir a git)
+.env
+backend/.env
+
+# Logs temporales
+*.log

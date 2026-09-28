@@ -1,0 +1,79 @@
+/* Carrusel horizontal (adaptado del colecciones.css original) */
+.carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.products {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 10px 0;
+  width: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.products::-webkit-scrollbar {
+  display: none;
+}
+
+.products .card {
+  flex-shrink: 0;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 123, 255, 0.8);
+  color: white;
+  border: none;
+  font-size: 24px;
+  padding: 12px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  z-index: 10;
+  transition: background 0.3s ease;
+}
+
+.arrow:hover {
+  background: rgba(0, 86, 179, 1);
+}
+
+.left-arrow { left: -40px; }
+.right-arrow { right: -40px; }
+
+@media (max-width: 768px) {
+  .products {
+    gap: 10px;
+  }
+
+  .products .card {
+    width: calc(50% - 5px);
+    padding: 10px;
+  }
+
+  .left-arrow { left: -10px; }
+  .right-arrow { right: -10px; }
+
+  .arrow {
+    padding: 8px 6px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .products {
+    gap: 8px;
+  }
+
+  .products .card {
+    width: calc(50% - 4px);
+    padding: 8px;
+  }
+}
