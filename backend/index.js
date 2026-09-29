@@ -20,15 +20,18 @@ app.use(express.json());
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET;
 
+//verificamos que la clave secreta exista al arrancar el servidor.
+// si falta, detenemos la app de inmediato para evitar fallos de seguridad al generar tokens
 if (!JWT_SECRET) {
   console.error("ERROR FATAL: JWT_SECRET no está definida en el archivo .env");
   process.exit(1);
 }
 
-// Middleware de autenticación
+// Middleware de autenticación, o sea actúa como "portero", intercepta las peticiones, lee el token del header
+// y comprueba si el usuario tiene una sesión activa válida antes de dejarlo pasar.
 const verificarToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = authHeader && authHeader.split(' ')[1]; // extraemos solo el hash omitiendo "Bearer" 
 
   if (!token) {
     return res.status(401).json({ error: "Acceso denegado. No se proporcionó un token." });
@@ -36,7 +39,7 @@ const verificarToken = (req, res, next) => {
 
   try {
     const verificado = jwt.verify(token, JWT_SECRET);
-    req.usuario = verificado;
+    req.usuario = verificado; //guardamos los datos del usuario extraidos del token en la peticion
     next();
   } catch (error) {
     return res.status(403).json({ error: "Token inválido o expirado." });
@@ -52,7 +55,9 @@ const verificarAdmin = (req, res, next) => {
   }
 };
 
+//endpoint para crear nuevos usuarios
 // registro de usuarios
+//valida los formatos de entrada, encripta la contraseña con bcrypt y la guarda en la base de datos (hasta yo en la base de datos solo veo eso) 
 app.post('/api/usuarios/registro', async (req, res) => {
   const { nombre, email, contrasena, telefono, direccion } = req.body;
 
@@ -80,6 +85,7 @@ app.post('/api/usuarios/registro', async (req, res) => {
   }
 
   try {
+    //generamos el hash seguro de la contaseña antes de guardarla (nunca guardamos texto plano)
     const passwordHash = await bcrypt.hash(contrasena, SALT_ROUNDS);
 
     const nuevoUsuario = await pool.query(
@@ -94,6 +100,7 @@ app.post('/api/usuarios/registro', async (req, res) => {
       usuario: nuevoUsuario.rows[0]
     });
   } catch (error) {
+    //manejo de error especifico de PostgreSQL (código 23505 = duplicado/llave única violada)
     if (error.code === '23505') {
       return res.status(400).json({ 
         error: "El correo electrónico ya se encuentra registrado." 
@@ -105,6 +112,7 @@ app.post('/api/usuarios/registro', async (req, res) => {
 });
 
 // inicio de sesión
+//Autentica credenciales y genera un token JWT firmado válido por 8 horas
 app.post('/api/usuarios/login', async (req, res) => {
   const { email, contrasena } = req.body;
 
@@ -173,6 +181,8 @@ app.get('/api/usuarios/perfil', verificarToken, async (req, res) => {
 });
 
 // actualizar perfil
+// Permite actualizar opcionalmente la contraseña (validando la anterior) 
+// usa COALESCE en SQL para actualizar únicamente los campos que el cliente envíe.
 app.put('/api/usuarios/perfil', verificarToken, async (req, res) => {
   const userId = req.usuario.id;
   const { contrasenaActual, nuevaContrasena, telefono, direccion } = req.body;
@@ -203,7 +213,8 @@ app.put('/api/usuarios/perfil', verificarToken, async (req, res) => {
 
       nuevoPasswordHash = await bcrypt.hash(nuevaContrasena, SALT_ROUNDS);
     }
-
+    // Si un campo viene 'undefined', se actualiza con NULL en el array de parámetros
+    // pero COALESCE mantendrá el valor que ya existía en la base de datos.
     const usuarioActualizado = await pool.query(
       `UPDATE usuarios 
        SET contrasena = COALESCE($1, contrasena), 
@@ -224,9 +235,10 @@ app.put('/api/usuarios/perfil', verificarToken, async (req, res) => {
 });
 
 // eliminar cuenta
+// para permitir a un usuario borrar su propia cuenta o a un administrador borrar cualquier usuario
 app.delete('/api/usuarios/:id', verificarToken, async (req, res) => {
   const { id } = req.params;
-
+  // comprobamos si la petición la realiza el dueño del perfil o un administrador
   const esAdmin = req.usuario.rol === 'ADMINISTRADOR' || req.usuario.rol === 'admin';
   if (req.usuario.id !== parseInt(id, 10) && !esAdmin) {
     return res.status(403).json({ error: "No tienes permiso para eliminar esta cuenta." });
@@ -248,15 +260,15 @@ app.delete('/api/usuarios/:id', verificarToken, async (req, res) => {
 
 // Endpoints de productos (CRUD)
 
-
 // 1. obtener productos activos (Público para el catálogo)
+// contruye la consulta SQL dinamicamente si el usuario pasa el filtro por categoría
 app.get('/api/productos', async (req, res) => {
   const { categoria } = req.query;
 
   try {
     let consulta = "SELECT * FROM productos WHERE estado = 'activo'";
     const params = [];
-
+    // si viene la categoría en el Query Parameter (ej. ?categoria=ropa), la agregamos al filtro
     if (categoria) {
       consulta += " AND categoria = $1";
       params.push(categoria);
