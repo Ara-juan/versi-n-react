@@ -12,10 +12,13 @@ import AdminProductos from './pages/AdminProductos.jsx';
 export default function App() {
   const location = useLocation();
 
+  // Definimos las rutas donde NO queremos mostrar el Navbar
+  const rutasSinNavbar = ['/', '/login'];
+
   return (
     <>
-      {/* Muestra la Navbar en todas las páginas excepto en el inicio '/' */}
-      {location.pathname !== '/' && <Navbar />}
+      {/* Muestra la Navbar solo si la ruta actual no está en la lista */}
+      {!rutasSinNavbar.includes(location.pathname) && <Navbar />}
 
       <Routes>
         <Route path="/" element={<Inicio />} />
