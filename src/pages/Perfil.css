@@ -2,7 +2,7 @@
 .profile-wrapper {
   max-width: 480px;
   margin: 0 auto 50px auto;
-  padding: 0 15px;
+  padding: 110px 15px 0 15px; /* Agregado 110px arriba para librar la Navbar */
 }
 
 .profile-card {
@@ -113,7 +113,7 @@ hr.profile-divider {
 @media (max-width: 768px) {
   .profile-wrapper {
     margin-bottom: 40px;
-    padding: 0 10px;
+    padding: 100px 10px 0 10px;
   }
 
   .profile-card {
