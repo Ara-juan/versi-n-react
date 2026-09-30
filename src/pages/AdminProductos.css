@@ -1,6 +1,8 @@
 /* Página de administración de productos (reutiliza el estilo de perfil.css) */
 .admin-main {
   max-width: 1000px;
+  padding-top: 110px; /* Despaza el contenido hacia abajo para que la Navbar no tape el título/formulario */
+  margin-bottom: 40px;
 }
 
 .admin-main .profile-card {
