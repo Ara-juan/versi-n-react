@@ -1,6 +1,6 @@
-/* Cuadrícula y tarjetas del catálogo (adaptado del main.css original) */
+/* Cuadrícula y tarjetas del catálogo */
 .catalog {
-  padding: 40px;
+  padding: 40px 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -12,11 +12,11 @@
   color: white;
 }
 
+/* Usamos CSS Grid en lugar de flexbox para controlar exactamente las columnas */
 .catalog-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 productos por fila en pantallas grandes */
   gap: 20px;
-  justify-content: flex-start;
   padding-top: 10px;
   padding-bottom: 10px;
 }
@@ -26,7 +26,7 @@
   border: none;
   border-radius: 10px;
   padding: 15px;
-  width: calc(33.333% - 14px);
+  width: 100%; /* El ancho lo controla el grid */
   box-sizing: border-box;
   color: white;
   cursor: pointer;
@@ -59,23 +59,31 @@
   color: #ccc;
 }
 
+/* Responsivo para Tablets y Celulares (2 productos por fila) */
 @media (max-width: 768px) {
   .catalog {
     padding: 20px 10px;
   }
 
+  .catalog-grid {
+    grid-template-columns: repeat(2, 1fr); /* Exactamente 2 columnas */
+    gap: 12px;
+  }
+
   .card {
-    width: calc(50% - 6px);
     padding: 10px;
-    margin-bottom: 12px;
   }
 }
 
+/* Ajustes finos para celulares móviles más pequeños */
 @media (max-width: 480px) {
+  .catalog-grid {
+    grid-template-columns: repeat(2, 1fr); /* Mantiene estrictamente 2 columnas */
+    gap: 8px;
+  }
+
   .card {
-    width: calc(50% - 5px);
     padding: 8px;
-    margin-bottom: 10px;
   }
 
   .card h3 {
