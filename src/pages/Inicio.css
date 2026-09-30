@@ -5,6 +5,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  text-align: center; /* Asegura centrado general de textos */
   backdrop-filter: brightness(0.9);
 }
 
@@ -23,13 +24,20 @@
   color: white;
 }
 
+/* Flexbox para centrar botones y textos verticalmente */
 .buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 40px;
+  width: 100%;
 }
 
 .buttons p {
-  margin: 10px 0;
+  margin: 12px 0 6px 0;
   font-size: 14px;
+  text-align: center;
 }
 
 .buttons a {
@@ -42,11 +50,12 @@
   color: white;
   border: none;
   padding: 12px 24px;
-  margin: 8px 0;
+  margin: 4px 0 12px 0;
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
   transition: background 0.3s ease;
+  min-width: 140px; /* Ancho uniforme para ambos botones */
 }
 
 .buttons .btn:hover {

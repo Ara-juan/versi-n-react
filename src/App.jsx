@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Inicio from './pages/Inicio.jsx';
 import Colecciones from './pages/Colecciones.jsx';
@@ -10,9 +10,12 @@ import Perfil from './pages/Perfil.jsx';
 import AdminProductos from './pages/AdminProductos.jsx';
 
 export default function App() {
+  const location = useLocation();
+
   return (
     <>
-      <Navbar />
+      {/* Muestra la Navbar en todas las páginas excepto en el inicio '/' */}
+      {location.pathname !== '/' && <Navbar />}
 
       <Routes>
         <Route path="/" element={<Inicio />} />
