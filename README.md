@@ -4,6 +4,8 @@ En este repositorio se encuentra la versión del proyecto de urban clothes (pagi
 
 
 La versión en HTML/CSS/JS sigue activa (por si algo fallaba y no tenia copia de respaldo del código): 
+https://github.com/Ara-juan/Urban-Clothes.git
+
 
 
 ## Tecnologías
