@@ -6,14 +6,17 @@ import { cerrarSesion } from '../services/api.js';
 import './Navbar.css';
 
 export default function Navbar() {
+  //Consumo de contextos globales para autenticación y filtros de busqueda
   const { sesionActiva, usuario, esAdmin, cerrarSesionLocal } = useAuth();
   const { busqueda, setBusqueda, precioMax, setPrecioMax } = useFiltros();
+  //Hooks de react router para navegación y lectura de la url actual
   const navigate = useNavigate();
   const location = useLocation();
 
-  
+  // Aplica la posición fija ('navbar-fija') solo cuando el usuario está en vistas administrativas o de perfil
   const esFija = location.pathname === '/perfil' || location.pathname === '/admin-productos';
-
+  
+  //Arreglo con la estructura del menú para generar enlaces dinámicamente mediante un map
   const enlaces = [
     { ruta: '/catalogo', texto: 'Catálogo' },
     { ruta: '/hombre', texto: 'Hombre' },
@@ -23,6 +26,7 @@ export default function Navbar() {
     { ruta: '/acerca-de', texto: 'Acerca de' }
   ];
 
+  // Limpia la sesión tanto en la API/localStorage como en el estado local de React,y redirecciona a la pantalla de login
   const manejarCerrarSesion = () => {
     cerrarSesion();
     cerrarSesionLocal();
@@ -38,7 +42,7 @@ export default function Navbar() {
           </Link>
         </div>
 
-        <ul className="nav-links">
+        <ul className="nav-links"> 
           {enlaces.map((enlace) => (
             <li key={enlace.ruta}>
               <NavLink to={enlace.ruta} className={({ isActive }) => (isActive ? 'active' : '')}>

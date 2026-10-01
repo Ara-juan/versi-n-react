@@ -43,26 +43,27 @@
   display: block;
 }
 
-.profile-card input.form-control {
-  background-color: rgba(20, 20, 20, 0.9) !important;
+
+.profile-card input.form-control.form-control {
+  background-color: rgba(20, 20, 20, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white !important;
+  color: white;
   padding: 10px 12px;
   border-radius: 6px;
   font-size: 14px;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.profile-card input.form-control:focus {
+.profile-card input.form-control.form-control:focus {
   border-color: #007BFF;
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
   outline: none;
 }
 
-.profile-card input.form-control[readonly] {
-  background-color: rgba(40, 40, 40, 0.6) !important;
+.profile-card input.form-control.form-control[readonly] {
+  background-color: rgba(40, 40, 40, 0.6);
   border-color: rgba(255, 255, 255, 0.08);
-  color: #b0b0b0 !important;
+  color: #b0b0b0;
   cursor: not-allowed;
 }
 

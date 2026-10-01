@@ -1,4 +1,4 @@
-// Punto de entrada de la aplicación React de Americanoshh (Urban Clothes)
+// Punto de entrada de la pagina
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';

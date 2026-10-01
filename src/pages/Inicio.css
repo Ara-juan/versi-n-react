@@ -1,4 +1,4 @@
-/* Landing page (adaptado del styles.css original) */
+/*estilos de la página principal (de la landing page principal)*/
 .inicio-container {
   display: flex;
   flex-direction: column;
@@ -46,7 +46,7 @@
 }
 
 .buttons .btn {
-  background-color: #007BFF; /* azul */
+  background-color: #007BFF; 
   color: white;
   border: none;
   padding: 12px 24px;

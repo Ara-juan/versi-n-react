@@ -27,6 +27,7 @@
   margin-bottom: 20px;
 }
 
+/*Subtitulos de seccion en color neon pa guiar la vista entre los campos del formulario*/
 .admin-main .section-title {
   color: #00ffcc;
   font-size: 15px;
@@ -43,23 +44,27 @@
   display: block;
 }
 
+/* Personalización de los campos del formulario para acoplarlos al tema oscuro */
 .admin-main .form-control {
   background-color: rgba(20, 20, 20, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
 }
 
+/* Brillo sutil de enfoque cuando el administrador da clic sobre un campo de entrada */
 .admin-main .form-control:focus {
   border-color: #007BFF;
   box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
   outline: none;
 }
 
+/* Asegura que los desplegables mantengan el fondo oscuro al abrirse */
 .admin-main select.form-control option {
   background-color: #141414;
   color: white;
 }
 
+/* Botón principal de guardado */
 .admin-main .btn-save {
   width: 100%;
   padding: 12px;
@@ -82,7 +87,8 @@
   opacity: 0.7;
   cursor: wait;
 }
-
+/*limita la altura de la lista de productos y habilita scroll interno
+para evitar que la tabla alargue infinitamente toda la página*/
 .admin-main .table-responsive {
   max-height: 500px;
   overflow-y: auto;

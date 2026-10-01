@@ -1,4 +1,4 @@
-/* NAVBAR  */
+/* NAVBAR, estructura principal de la barra de navegación */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -6,13 +6,13 @@
   background: rgba(0, 0, 0, 0.8);
   padding: 15px 30px;
 }
-
+/* Variante fijada al borde superior de la pantalla*/
 .navbar.navbar-fija {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1050;
+  z-index: 1050; /* Prioridad de superposición por encima de casi cualquier otro elemento */
   backdrop-filter: blur(5px);
   background: rgba(0, 0, 0, 0.85);
 }
@@ -27,7 +27,7 @@
   height: auto;
   display: block;
 }
-
+/* Menú horizontal de navegación */
 .nav-links {
   list-style: none;
   display: flex;
@@ -42,15 +42,15 @@
   font-weight: bold;
   transition: color 0.2s ease;
 }
-
+/* Cambia de color al pasar el cursor */
 .nav-links li a:hover {
   color: var(--bs-primary, #007BFF);
 }
-
+/* Resalta en tono neón la sección o página donde se encuentra ubicado el usuario actualmente */
 .nav-links li a.active {
-  color: #00ffcc;
+  color: #007BFF;
 }
-
+/* Contenedor flexible que agrupa el selector de precio, el campo de texto y el botón de búsqueda */
 .search-bar {
   display: flex;
   gap: 8px;
@@ -89,14 +89,14 @@
 .search-bar button:hover {
   background: #0056b3;
 }
-
+/*Ajustes para pantallas pequeñas */
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
     gap: 15px;
     padding: 15px;
   }
-
+  /* Desactiva la posición fija en móviles para evitar que la barra ocupe demasiado espacio en la pantalla */
   .navbar.navbar-fija {
     position: relative;
   }
@@ -106,7 +106,7 @@
     justify-content: center;
     gap: 10px;
   }
-
+  /* Expande la barra de búsqueda para centrarla en dispositivos móviles */
   .search-bar {
     width: 100%;
     justify-content: center;
@@ -116,7 +116,7 @@
     flex: 1;
     max-width: 180px;
   }
-
+  /* Alineación de las opciones de sesión o perfil del usuario */
   .menu-usuario {
     margin-left: 0;
     justify-content: center;

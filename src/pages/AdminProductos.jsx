@@ -43,7 +43,8 @@ export default function AdminProductos() {
     setMensajeError(esError);
   };
 
-  // Protección de la ruta: exige sesión de administrador
+  // Protección de la ruta, exige sesión de administrador
+  //verifica que haya una sesion iniciada y que el usuario tenga el rol administrador
   useEffect(() => {
     if (!sesionActiva) {
       alert('Acceso restringido. Por favor inicia sesión.');
@@ -68,7 +69,8 @@ export default function AdminProductos() {
     if (sesionActiva && esAdmin) cargarLista();
   }, [sesionActiva, esAdmin]);
 
-  // Vista previa de la imagen seleccionada
+  // Genera una url temporal en memoria del navegador, pa mostrar una vista previa de la imagen
+  // seleccionada antes de subirla a la nube
   const manejarSeleccionImagen = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -77,6 +79,8 @@ export default function AdminProductos() {
   };
 
   // Guarda (crea o actualiza) el producto
+  // gestiona el envio del formulario. si se selecciono un archivo nuevo
+  //Primero lo sube a supabase storage y luego guarda el producto en postgreSQL
   const manejarGuardar = async (event) => {
     event.preventDefault();
     setMensaje(null);
@@ -99,6 +103,7 @@ export default function AdminProductos() {
         return;
       }
 
+      // Convierte la cadena separada por comas (ej: "S, M, L") en un arreglo limpio para la BD
       const tallasArray = tallas.split(',').map((t) => t.trim()).filter((t) => t.length > 0);
 
       const datos = {
@@ -111,13 +116,14 @@ export default function AdminProductos() {
         tallas: tallasArray.length > 0 ? tallasArray : TALLAS_POR_DEFECTO
       };
 
+      // Alterna dinámicamente entre la API de actualizar o crear según la variable "modoEdicion"
       const resultado = modoEdicion
         ? await actualizarProducto(prodId, datos)
         : await crearProducto(datos);
 
       mostrarMensaje(resultado.mensaje || 'Operación realizada con éxito', false);
       resetearFormulario();
-      cargarLista();
+      cargarLista(); //recarga la tabla de productos
     } catch (error) {
       mostrarMensaje(error.message || 'Error de conexión con el servidor.', true);
     } finally {
@@ -125,6 +131,7 @@ export default function AdminProductos() {
     }
   };
 
+  //carga los datos seleccionados  en los campos del formulario
   // Llena el formulario con los datos del producto a editar
   const prepararEdicion = (prod) => {
     setModoEdicion(true);

@@ -1,4 +1,5 @@
 /* Página Login  */
+/*centra la tarjeta de inicio de sesion*/
 .login-container {
   text-align: center;
   width: 100%;
@@ -18,6 +19,7 @@
   align-self: center;
 }
 
+/*Tarjeta que envuelve el formulario pa diferenciar del fondo*/
 .form-box {
   background: rgba(0, 0, 0, 0.7);
   padding: 30px;
@@ -32,16 +34,17 @@
   color: white;
 }
 
+/* Contenedor tipo segmento para cambiar dinámicamente entre 'Iniciar Sesión' y 'Registrarse' */
 .tabs {
   display: flex;
   justify-content: space-around;
   margin-bottom: 20px;
   border-radius: 6px;
-  overflow: hidden;
+  overflow: hidden; /* Mantiene las esquinas redondeadas en los botones internos */
 }
 
 .tab {
-  flex: 1;
+  flex: 1; /* Hace que ambas pestañas ocupen el mismo ancho (50% cada una) */
   padding: 10px;
   border: none;
   cursor: pointer;
@@ -51,6 +54,7 @@
   transition: background 0.3s ease;
 }
 
+/* Resalta con color azul la pestaña actualmente activa */
 .tab.active {
   background: #007BFF;
 }
