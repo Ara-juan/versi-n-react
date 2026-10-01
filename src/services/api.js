@@ -1,6 +1,9 @@
 // Centraliza todas las llamadas al backend Node.js (Express + PostgreSQL/Supabase)
 
-const API_BASE = '/api';
+// Detecta si la app se ejecuta en Netlify (producción) o en local, dirigiendo la petición directamente a Render
+const API_BASE = window.location.hostname.includes('netlify.app')
+  ? 'https://urban-clothes-slc0.onrender.com/api'
+  : '/api';
 
 async function manejarRespuesta(respuesta) {
   const data = await respuesta.json().catch(() => ({}));
