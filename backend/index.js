@@ -5,10 +5,10 @@ const cors = require('cors');
 const pool = require('./db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 
 const app = express();
 
-// Configuración amplia de CORS para despliegues (Netlify, Render)
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -20,18 +20,23 @@ app.use(express.json());
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-//verificamos que la clave secreta exista al arrancar el servidor.
-// si falta, detenemos la app de inmediato para evitar fallos de seguridad al generar tokens
 if (!JWT_SECRET) {
   console.error("ERROR FATAL: JWT_SECRET no está definida en el archivo .env");
   process.exit(1);
 }
 
-// Middleware de autenticación, o sea actúa como "portero", intercepta las peticiones, lee el token del header
-// y comprueba si el usuario tiene una sesión activa válida antes de dejarlo pasar.
+// Configuración del servicio de correo con Nodemailer (Gmail)
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER || 'dcuentapro@gmail.com',
+    pass: process.env.EMAIL_PASS
+  }
+});
+
 const verificarToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // extraemos solo el hash omitiendo "Bearer" 
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
     return res.status(401).json({ error: "Acceso denegado. No se proporcionó un token." });
@@ -39,14 +44,13 @@ const verificarToken = (req, res, next) => {
 
   try {
     const verificado = jwt.verify(token, JWT_SECRET);
-    req.usuario = verificado; //guardamos los datos del usuario extraidos del token en la peticion
+    req.usuario = verificado;
     next();
   } catch (error) {
     return res.status(403).json({ error: "Token inválido o expirado." });
   }
 };
 
-// Middleware para verificar rol de administrador (Acepta 'ADMINISTRADOR' o 'admin', aunque en la base de datos lo tengo como "ADMINISTRADOR")
 const verificarAdmin = (req, res, next) => {
   if (req.usuario && (req.usuario.rol === 'ADMINISTRADOR' || req.usuario.rol === 'admin')) {
     next();
@@ -55,9 +59,7 @@ const verificarAdmin = (req, res, next) => {
   }
 };
 
-//endpoint para crear nuevos usuarios
-// registro de usuarios
-//valida los formatos de entrada, encripta la contraseña con bcrypt y la guarda en la base de datos (hasta yo en la base de datos solo veo eso) 
+// Registro de usuarios
 app.post('/api/usuarios/registro', async (req, res) => {
   const { nombre, email, contrasena, telefono, direccion } = req.body;
 
@@ -67,25 +69,18 @@ app.post('/api/usuarios/registro', async (req, res) => {
 
   const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
   if (!emailRegex.test(email)) {
-    return res.status(400).json({ 
-      error: "El correo electrónico no tiene un formato válido." 
-    });
+    return res.status(400).json({ error: "El correo electrónico no tiene un formato válido." });
   }
 
   if (contrasena.length < 8) {
-    return res.status(400).json({ 
-      error: "La contraseña debe tener como mínimo 8 caracteres." 
-    });
+    return res.status(400).json({ error: "La contraseña debe tener como mínimo 8 caracteres." });
   }
 
   if (telefono && !/^\d+$/.test(telefono)) {
-    return res.status(400).json({ 
-      error: "El campo teléfono solo debe contener números." 
-    });
+    return res.status(400).json({ error: "El campo teléfono solo debe contener números." });
   }
 
   try {
-    //generamos el hash seguro de la contaseña antes de guardarla (nunca guardamos texto plano)
     const passwordHash = await bcrypt.hash(contrasena, SALT_ROUNDS);
 
     const nuevoUsuario = await pool.query(
@@ -100,19 +95,14 @@ app.post('/api/usuarios/registro', async (req, res) => {
       usuario: nuevoUsuario.rows[0]
     });
   } catch (error) {
-    //manejo de error especifico de PostgreSQL (código 23505 = duplicado/llave única violada)
     if (error.code === '23505') {
-      return res.status(400).json({ 
-        error: "El correo electrónico ya se encuentra registrado." 
-      });
+      return res.status(400).json({ error: "El correo electrónico ya se encuentra registrado." });
     }
-    
     res.status(500).json({ error: "Error interno del servidor." });
   }
 });
 
-// inicio de sesión
-//Autentica credenciales y genera un token JWT firmado válido por 8 horas
+// Login
 app.post('/api/usuarios/login', async (req, res) => {
   const { email, contrasena } = req.body;
 
@@ -138,11 +128,7 @@ app.post('/api/usuarios/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { 
-        id: usuarioEncontrado.id_usuario, 
-        email: usuarioEncontrado.email, 
-        rol: usuarioEncontrado.rol 
-      },
+      { id: usuarioEncontrado.id_usuario, email: usuarioEncontrado.email, rol: usuarioEncontrado.rol },
       JWT_SECRET,
       { expiresIn: '8h' }
     );
@@ -162,7 +148,85 @@ app.post('/api/usuarios/login', async (req, res) => {
   }
 });
 
-// obtener perfil
+// RECUPERACIÓN DE CONTRASEÑA: Solicitar enlace por correo
+app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "Por favor ingresa tu correo electrónico." });
+  }
+
+  try {
+    const consulta = await pool.query('SELECT id_usuario, nombre FROM usuarios WHERE email = $1', [email]);
+    if (consulta.rows.length === 0) {
+      return res.status(404).json({ error: "No existe ninguna cuenta registrada con este correo." });
+    }
+
+    const usuario = consulta.rows[0];
+
+    // Generamos un token con expiración corta (15 minutos)
+    const tokenRecuperacion = jwt.sign(
+      { id: usuario.id_usuario, email },
+      JWT_SECRET,
+      { expiresIn: '15m' }
+    );
+
+    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const enlaceRecuperacion = `${baseUrl}/login?resetToken=${tokenRecuperacion}`;
+
+    // Enviar el correo
+    const mailOptions = {
+      from: `"Americanoshh Support" <${process.env.EMAIL_USER || 'dcuentapro@gmail.com'}>`,
+      to: email,
+      subject: 'Recuperación de Contraseña — Americanoshh',
+      html: `
+        <div style="font-family: Arial, sans-serif; background-color: #121212; color: #ffffff; padding: 25px; border-radius: 10px;">
+          <h2 style="color: #007BFF; text-align: center;">Americanoshh</h2>
+          <p>Hola, <strong>${usuario.nombre || 'Cliente'}</strong>.</p>
+          <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.</p>
+          <p>Haz clic en el siguiente botón para crear una nueva contraseña. Este enlace expira en <strong>15 minutos</strong>:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${enlaceRecuperacion}" style="background-color: #007BFF; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Restablecer Contraseña</a>
+          </div>
+          <p style="font-size: 12px; color: #aaaaaa;">Si tú no solicitaste este cambio, puedes ignorar este mensaje de forma segura.</p>
+        </div>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.json({ mensaje: "Hemos enviado las instrucciones a tu correo electrónico." });
+  } catch (error) {
+    console.error("Error al enviar correo:", error);
+    res.status(500).json({ error: "No se pudo enviar el correo de recuperación. Revisa la configuración del servidor." });
+  }
+});
+
+// RECUPERACIÓN DE CONTRASEÑA: Restablecer contraseña con el token
+app.post('/api/usuarios/restablecer-contrasena', async (req, res) => {
+  const { token, nuevaContrasena } = req.body;
+
+  if (!token || !nuevaContrasena) {
+    return res.status(400).json({ error: "El token y la nueva contraseña son obligatorios." });
+  }
+
+  if (nuevaContrasena.length < 8) {
+    return res.status(400).json({ error: "La nueva contraseña debe tener al menos 8 caracteres." });
+  }
+
+  try {
+    const verificado = jwt.verify(token, JWT_SECRET);
+    const passwordHash = await bcrypt.hash(nuevaContrasena, SALT_ROUNDS);
+
+    await pool.query('UPDATE usuarios SET contrasena = $1 WHERE id_usuario = $2', [passwordHash, verificado.id]);
+
+    res.json({ mensaje: "¡Tu contraseña ha sido actualizada con éxito! Ya puedes iniciar sesión." });
+  } catch (error) {
+    return res.status(400).json({ error: "El enlace es inválido o ha expirado. Vuelve a solicitar la recuperación." });
+  }
+});
+
+// Perfil
 app.get('/api/usuarios/perfil', verificarToken, async (req, res) => {
   try {
     const usuario = await pool.query(
@@ -180,9 +244,7 @@ app.get('/api/usuarios/perfil', verificarToken, async (req, res) => {
   }
 });
 
-// actualizar perfil
-// Permite actualizar opcionalmente la contraseña (validando la anterior) 
-// usa COALESCE en SQL para actualizar únicamente los campos que el cliente envíe.
+// Actualizar Perfil
 app.put('/api/usuarios/perfil', verificarToken, async (req, res) => {
   const userId = req.usuario.id;
   const { contrasenaActual, nuevaContrasena, telefono, direccion } = req.body;
@@ -213,8 +275,7 @@ app.put('/api/usuarios/perfil', verificarToken, async (req, res) => {
 
       nuevoPasswordHash = await bcrypt.hash(nuevaContrasena, SALT_ROUNDS);
     }
-    // Si un campo viene 'undefined', se actualiza con NULL en el array de parámetros
-    // pero COALESCE mantendrá el valor que ya existía en la base de datos.
+
     const usuarioActualizado = await pool.query(
       `UPDATE usuarios 
        SET contrasena = COALESCE($1, contrasena), 
@@ -234,11 +295,9 @@ app.put('/api/usuarios/perfil', verificarToken, async (req, res) => {
   }
 });
 
-// eliminar cuenta
-// para permitir a un usuario borrar su propia cuenta o a un administrador borrar cualquier usuario
+// Eliminar Usuario
 app.delete('/api/usuarios/:id', verificarToken, async (req, res) => {
   const { id } = req.params;
-  // comprobamos si la petición la realiza el dueño del perfil o un administrador
   const esAdmin = req.usuario.rol === 'ADMINISTRADOR' || req.usuario.rol === 'admin';
   if (req.usuario.id !== parseInt(id, 10) && !esAdmin) {
     return res.status(403).json({ error: "No tienes permiso para eliminar esta cuenta." });
@@ -257,18 +316,13 @@ app.delete('/api/usuarios/:id', verificarToken, async (req, res) => {
   }
 });
 
-
-// Endpoints de productos (CRUD)
-
-// 1. obtener productos activos (Público para el catálogo)
-// contruye la consulta SQL dinamicamente si el usuario pasa el filtro por categoría
+// CRUD Productos
 app.get('/api/productos', async (req, res) => {
   const { categoria } = req.query;
 
   try {
     let consulta = "SELECT * FROM productos WHERE estado = 'activo'";
     const params = [];
-    // si viene la categoría en el Query Parameter (ej. ?categoria=ropa), la agregamos al filtro
     if (categoria) {
       consulta += " AND categoria = $1";
       params.push(categoria);
@@ -284,7 +338,6 @@ app.get('/api/productos', async (req, res) => {
   }
 });
 
-// 2. obtener un producto por ID (Público)
 app.get('/api/productos/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -301,7 +354,6 @@ app.get('/api/productos/:id', async (req, res) => {
   }
 });
 
-// 3. crear nuevo producto (Solo Administradores)
 app.post('/api/productos', verificarToken, verificarAdmin, async (req, res) => {
   const { titulo, descripcion, precio, imagen_url, categoria, tallas } = req.body;
 
@@ -336,7 +388,6 @@ app.post('/api/productos', verificarToken, verificarAdmin, async (req, res) => {
   }
 });
 
-// 4. actualizar producto o editar (Solo Administradores)
 app.put('/api/productos/:id', verificarToken, verificarAdmin, async (req, res) => {
   const { id } = req.params;
   const { titulo, descripcion, precio, imagen_url, categoria, tallas, estado } = req.body;
@@ -374,7 +425,6 @@ app.put('/api/productos/:id', verificarToken, verificarAdmin, async (req, res) =
   }
 });
 
-// 5. eliminar producto permanentemente (Solo Administradores)
 app.delete('/api/productos/:id', verificarToken, verificarAdmin, async (req, res) => {
   const { id } = req.params;
 
