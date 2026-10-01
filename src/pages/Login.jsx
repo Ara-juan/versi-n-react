@@ -1,4 +1,4 @@
-// Página Login/Registro (equivalente a login.html + login.js de la versión original)
+// Página Login/Registro 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { iniciarSesion, registrarUsuario } from '../services/api.js';

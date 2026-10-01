@@ -1,4 +1,4 @@
-// Página Perfil (equivalente a perfil.html + perfil.js de la versión original)
+// Página Perfil
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { obtenerPerfil, actualizarPerfil, eliminarCuenta, cerrarSesion } from '../services/api.js';

@@ -1,6 +1,4 @@
-// Contexto de sesión: reemplaza el auth.js global de la versión con HTML estático.
-// Mantiene las mismas claves de localStorage (urban_token / urban_user) para que
-// la sesión sea compatible con la versión original y con el backend.
+
 import { createContext, useContext, useState, useMemo } from 'react';
 
 const AuthContext = createContext(null);

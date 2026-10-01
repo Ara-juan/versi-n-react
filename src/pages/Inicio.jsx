@@ -1,4 +1,4 @@
-// Landing page principal (equivalente a index.html de la versión original)
+// Landing page principal 
 import { Link } from 'react-router-dom';
 import './Inicio.css';
 

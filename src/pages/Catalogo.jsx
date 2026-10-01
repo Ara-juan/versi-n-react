@@ -1,4 +1,4 @@
-// Página Catálogo: muestra todos los productos activos (equivalente a catalogo.html)
+// Página Catálogo: muestra todos los productos activos 
 import { useState } from 'react';
 import useProductos from '../hooks/useProductos.js';
 import ListaProductos from '../components/ListaProductos.jsx';

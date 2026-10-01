@@ -1,5 +1,4 @@
-// Contexto para compartir el estado de búsqueda y filtro de precio
-// entre la Navbar y las páginas de catálogo (como el script.js original).
+
 import { createContext, useContext, useState, useMemo } from 'react';
 
 const FiltrosContext = createContext(null);

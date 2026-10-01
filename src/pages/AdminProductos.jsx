@@ -1,4 +1,4 @@
-// Página de administración de productos (equivalente a admin-productos.html + .js)
+// Página de administración de productos
 // Protegida: solo administradores. CRUD completo + subida de imágenes a Supabase Storage.
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';

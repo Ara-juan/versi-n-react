@@ -1,4 +1,4 @@
-// Página "Acerca de" (equivalente a "acerca de.html" de la versión original)
+// Página "Acerca de" 
 import './AcercaDe.css';
 
 export default function AcercaDe() {

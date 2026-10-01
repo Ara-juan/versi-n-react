@@ -1,5 +1,5 @@
 // Página genérica de categoría: usada por las rutas /hombre, /mujer y /unisex
-// (equivalente a hombre.html, mujer.html y unisex.html de la versión original)
+
 import { useState } from 'react';
 import useProductos from '../hooks/useProductos.js';
 import ListaProductos from '../components/ListaProductos.jsx';
