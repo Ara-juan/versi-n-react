@@ -1,4 +1,4 @@
-// Barra de navegación: replica la navbar de la versión original con Bootstrap y React Router
+// Barra de navegación con Bootstrap y React Router
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useFiltros } from '../context/FiltrosContext.jsx';
@@ -11,7 +11,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // En Perfil y Admin la navbar original es fija (arriba), como en perfil.css
+  
   const esFija = location.pathname === '/perfil' || location.pathname === '/admin-productos';
 
   const enlaces = [

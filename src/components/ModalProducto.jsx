@@ -1,12 +1,15 @@
-// Modal de detalles del producto: mismo diseño que la versión original,
+// Modal de detalles del producto
 // pero manejado con estado React (ya no manipula el DOM a mano).
 import { useEffect, useState } from 'react';
 import './ModalProducto.css';
 
-const WHATSAPP_URL = 'https://wa.me/573124363561'; // número de la marca
+const WHATSAPP_URL = 'https://wa.me/573124363561'; // número de la marca (en este caso mi numero de cel)
 
 export default function ModalProducto({ producto, onCerrar }) {
+  //Estado local para rastrear la talla actualmente elegida por el usuario
   const [tallaSeleccionada, setTallaSeleccionada] = useState(null);
+  //Valida si el producto trae un arreglo de tallas válido desde la base de datos.
+  //Si no existe o viene vacio, asigna un listado estandar por defecto
   const tallas = Array.isArray(producto?.tallas) && producto.tallas.length > 0 ? producto.tallas : ['XS', 'S', 'M', 'L', 'XL'];
 
   // Cierra el modal con la tecla Escape
@@ -15,11 +18,13 @@ export default function ModalProducto({ producto, onCerrar }) {
       if (e.key === 'Escape') onCerrar();
     };
     window.addEventListener('keydown', manejarTecla);
+    //Limpieza del event listener al desmontar el componente para evitar fugas de memoria
     return () => window.removeEventListener('keydown', manejarTecla);
   }, [onCerrar]);
 
+  //si no hay producto selecionado, el componente no renderiza nada en el DOM
   if (!producto) return null;
-
+  //Formatea el valor numerico a moneda
   const precioFormateado = `$${parseInt(producto.precio, 10).toLocaleString('es-CO')}`;
 
   return (

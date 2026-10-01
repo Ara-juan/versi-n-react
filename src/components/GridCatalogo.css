@@ -1,10 +1,13 @@
-/* Cuadrícula y tarjetas del catálogo */
+/* Cuadrícula y tarjetas del catálogo (limita el ancho
+del catálogo para evitar que se estira de mas en pantallas 
+ultra anchas) */
 .catalog {
   padding: 40px 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
-
+/* Subrayado decorativo del título que usa una variable de Bootstrap como color primario,
+   o azul como color de respaldo ('fallback') si la variable no existe. */
 .catalog h2 {
   margin-bottom: 20px;
   border-bottom: 2px solid var(--bs-primary, #007BFF);
@@ -16,11 +19,11 @@
 .catalog-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3 productos por fila en pantallas grandes */
-  gap: 20px;
+  gap: 20px; /* Espacio uniforme entre filas y columnas*/
   padding-top: 10px;
   padding-bottom: 10px;
 }
-
+/* Tarjeta con fondo oscuro semi transparente*/
 .card {
   background: rgba(0, 0, 0, 0.7);
   border: none;
@@ -33,11 +36,11 @@
   text-align: center;
   transition: transform 0.2s ease-in-out;
 }
-
+/* Efecto sutil de ampliación al pasar el mouse para indicar que la tarjeta es interactiva */
 .card:hover {
   transform: scale(1.02);
 }
-
+/* La imagen se adapta al 100% del ancho de la tarjeta manteniendo su proporción original */
 .card img {
   width: 100%;
   border-radius: 8px;
@@ -75,7 +78,7 @@
   }
 }
 
-/* Ajustes finos para celulares móviles más pequeños */
+/* Ajustes para celulares móviles más pequeños */
 @media (max-width: 480px) {
   .catalog-grid {
     grid-template-columns: repeat(2, 1fr); /* Mantiene estrictamente 2 columnas */

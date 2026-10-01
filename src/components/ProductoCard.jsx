@@ -1,4 +1,4 @@
-// Tarjeta de producto: mismo diseño y comportamiento que la versión original.
+// Tarjeta de producto
 // Al hacer clic abre el modal con los detalles (via prop onVerDetalle).
 export default function ProductoCard({ producto, onVerDetalle }) {
   const precioFormateado = `$${parseInt(producto.precio, 10).toLocaleString('es-CO')}`;

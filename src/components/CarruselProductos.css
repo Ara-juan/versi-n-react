@@ -1,4 +1,5 @@
-/* Carrusel horizontal (adaptado del colecciones.css original) */
+/* Carrusel horizontal relativo que sirve como marco para centrar el carrucel y permitir
+que las flechas laterales se  posiciones absolutamente respecto a este */
 .carousel-container {
   position: relative;
   display: flex;
@@ -7,6 +8,8 @@
   width: 100%;
 }
 
+/*Fila de productos con desplazamiento horizontal.
+"scroll-behavior: smooth", osea, hace que el movimiento al presionar las felchas sea fluido */
 .products {
   display: flex;
   gap: 20px;
@@ -14,22 +17,28 @@
   scroll-behavior: smooth;
   padding: 10px 0;
   width: 100%;
+  /* Oculta la barra de desplazamiento estándar En Firefox y Edge*/
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
+/*Oculta la barra de desplazamiento en navegadores basado en webkit (ejm;chrome) */
 .products::-webkit-scrollbar {
   display: none;
 }
 
+/* Evita que las tarjetas de productos se aplasten o reduzcan su tamaño cuando superan 
+el ancho disponible del contenedor*/
 .products .card {
   flex-shrink: 0;
 }
 
+/* Botones de navegación superpuestos verticalmente al centro.
+Usa traslucidez inicial y transición para responder al cursor (hover)*/
 .arrow {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(-50%); /* Centrado vertical exacto según el alto del boton*/
   background: rgba(0, 123, 255, 0.8);
   color: white;
   border: none;
@@ -37,7 +46,7 @@
   padding: 12px 10px;
   cursor: pointer;
   border-radius: 5px;
-  z-index: 10;
+  z-index: 10; /* con esto se asegura de q este flotando por encima de los productos*/
   transition: background 0.3s ease;
 }
 
@@ -45,9 +54,12 @@
   background: rgba(0, 86, 179, 1);
 }
 
+/*Ubicacion externa de las flechas sobresaliendo a los lados del carrucel */
 .left-arrow { left: -40px; }
 .right-arrow { right: -40px; }
 
+/* Ajustes para pantallas medianas (tablets o laptos pequeñas)
+Muestra 2 tarjetas por fila, calculando el 50% menos el espacio (gap)*/
 @media (max-width: 768px) {
   .products {
     gap: 10px;
@@ -57,7 +69,7 @@
     width: calc(50% - 5px);
     padding: 10px;
   }
-
+/* Acerca las flechas hacia dentro pa q no se salga de la pantalla en dispositivos móviles*/
   .left-arrow { left: -10px; }
   .right-arrow { right: -10px; }
 
@@ -66,7 +78,7 @@
     font-size: 18px;
   }
 }
-
+/* Ajustes para celulares (sigue siendo 2 productos por fila, pero reduce espacios para maximizar el área visible)*/
 @media (max-width: 480px) {
   .products {
     gap: 8px;
