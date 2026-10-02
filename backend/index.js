@@ -5,7 +5,6 @@ const cors = require('cors');
 const pool = require('./db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
 
 const app = express();
 
@@ -24,20 +23,6 @@ if (!JWT_SECRET) {
   console.error("ERROR FATAL: JWT_SECRET no está definida en el archivo .env");
   process.exit(1);
 }
-
-// Configuración de Nodemailer explícita (Puerto 465 SSL) para evitar timeouts en Render
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true, // Usa conexión SSL segura desde el inicio
-  auth: {
-    user: process.env.EMAIL_USER || 'dcuentapro@gmail.com',
-    pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false // Previene bloqueos de cert en entornos serverless/cloud
-  }
-});
 
 const verificarToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -155,7 +140,7 @@ app.post('/api/usuarios/login', async (req, res) => {
   }
 });
 
-// RECUPERACIÓN DE CONTRASEÑA: Solicitar correo con enlace
+// RECUPERACIÓN DE CONTRASEÑA: Enviar correo mediante Resend API HTTP
 app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
   const { email } = req.body;
 
@@ -180,25 +165,37 @@ app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
     const baseUrl = process.env.FRONTEND_URL || 'https://americanos-hh.netlify.app';
     const enlaceRecuperacion = `${baseUrl}/login?resetToken=${tokenRecuperacion}`;
 
-    const mailOptions = {
-      from: `"Americanoshh Support" <${process.env.EMAIL_USER || 'dcuentapro@gmail.com'}>`,
-      to: email,
-      subject: 'Recuperación de Contraseña — Americanoshh',
-      html: `
-        <div style="font-family: Arial, sans-serif; background-color: #121212; color: #ffffff; padding: 25px; border-radius: 10px;">
-          <h2 style="color: #007BFF; text-align: center;">Americanoshh</h2>
-          <p>Hola, <strong>${usuario.nombre || 'Cliente'}</strong>.</p>
-          <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.</p>
-          <p>Haz clic en el siguiente botón para crear una nueva contraseña. Este enlace expira en <strong>15 minutos</strong>:</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${enlaceRecuperacion}" style="background-color: #007BFF; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Restablecer Contraseña</a>
+    // Petición HTTP a la API de Resend por puerto 443 (HTTPS)
+    const respuestaResend = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
+      },
+      body: JSON.stringify({
+        from: 'Americanoshh Support <onboarding@resend.dev>',
+        to: [email],
+        subject: 'Recuperación de Contraseña — Americanoshh',
+        html: `
+          <div style="font-family: Arial, sans-serif; background-color: #121212; color: #ffffff; padding: 25px; border-radius: 10px;">
+            <h2 style="color: #007BFF; text-align: center;">Americanoshh</h2>
+            <p>Hola, <strong>${usuario.nombre || 'Cliente'}</strong>.</p>
+            <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.</p>
+            <p>Haz clic en el siguiente botón para crear una nueva contraseña. Este enlace expira en <strong>15 minutos</strong>:</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${enlaceRecuperacion}" style="background-color: #007BFF; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Restablecer Contraseña</a>
+            </div>
+            <p style="font-size: 12px; color: #aaaaaa;">Si tú no solicitaste este cambio, puedes ignorar este mensaje de forma segura.</p>
           </div>
-          <p style="font-size: 12px; color: #aaaaaa;">Si tú no solicitaste este cambio, puedes ignorar este mensaje de forma segura.</p>
-        </div>
-      `
-    };
+        `
+      })
+    });
 
-    await transporter.sendMail(mailOptions);
+    if (!respuestaResend.ok) {
+      const errorData = await respuestaResend.json();
+      console.error("Error devuelto por Resend API:", errorData);
+      throw new Error("No se pudo enviar el correo a través de Resend.");
+    }
 
     res.json({ mensaje: "Hemos enviado las instrucciones a tu correo electrónico." });
   } catch (error) {
