@@ -156,16 +156,16 @@ app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
 
     const usuario = consulta.rows[0];
 
+    // Token con duración de 1 hora
     const tokenRecuperacion = jwt.sign(
       { id: usuario.id_usuario, email },
       JWT_SECRET,
-      { expiresIn: '15m' }
+      { expiresIn: '1h' }
     );
 
     const baseUrl = process.env.FRONTEND_URL || 'https://americanos-hh.netlify.app';
     const enlaceRecuperacion = `${baseUrl}/login?resetToken=${tokenRecuperacion}`;
 
-    // Petición HTTP a la API de Resend por puerto 443 (HTTPS)
     const respuestaResend = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -181,7 +181,7 @@ app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
             <h2 style="color: #007BFF; text-align: center;">Americanoshh</h2>
             <p>Hola, <strong>${usuario.nombre || 'Cliente'}</strong>.</p>
             <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.</p>
-            <p>Haz clic en el siguiente botón para crear una nueva contraseña. Este enlace expira en <strong>15 minutos</strong>:</p>
+            <p>Haz clic en el siguiente botón para crear una nueva contraseña. Este enlace expira en <strong>1 hora</strong>:</p>
             
             <div style="text-align: center; margin: 30px 0;">
               <a href="${enlaceRecuperacion}" target="_blank" style="background-color: #007BFF; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Restablecer Contraseña</a>
@@ -189,7 +189,7 @@ app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
 
             <p style="font-size: 13px; color: #cccccc; word-break: break-all;">
               Si el botón no abre automáticamente, copia y pega el siguiente enlace directo en tu navegador:<br><br>
-              <a href="${enlaceRecuperacion}" target="_blank" style="color: #007BFF; text-decoration: underline;">${enlaceRecuperacion}</a>
+              <a href="${enlaceRecuperacion}" target="_blank" style="color: #007BFF;">${enlaceRecuperacion}</a>
             </p>
 
             <p style="font-size: 12px; color: #aaaaaa; margin-top: 20px;">Si tú no solicitaste este cambio, puedes ignorar este mensaje de forma segura.</p>
@@ -445,9 +445,9 @@ app.delete('/api/productos/:id', verificarToken, verificarAdmin, async (req, res
       return res.status(404).json({ error: "Producto no encontrado para eliminar." });
     }
 
-    res.json({ mensaje: "Producto eliminado definitivamente del sistema." });
+    res.json({ mensaje: "Producto eliminado correctamente del sistema." });
   } catch (error) {
-    res.status(500).json({ error: "Error al intentar eliminar el producto." });
+    res.status(500).json({ error: "Error al intentar eliminar el usuario." });
   }
 });
 
