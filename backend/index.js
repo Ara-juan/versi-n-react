@@ -182,10 +182,17 @@ app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
             <p>Hola, <strong>${usuario.nombre || 'Cliente'}</strong>.</p>
             <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.</p>
             <p>Haz clic en el siguiente botón para crear una nueva contraseña. Este enlace expira en <strong>15 minutos</strong>:</p>
+            
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${enlaceRecuperacion}" style="background-color: #007BFF; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Restablecer Contraseña</a>
+              <a href="${enlaceRecuperacion}" target="_blank" style="background-color: #007BFF; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Restablecer Contraseña</a>
             </div>
-            <p style="font-size: 12px; color: #aaaaaa;">Si tú no solicitaste este cambio, puedes ignorar este mensaje de forma segura.</p>
+
+            <p style="font-size: 13px; color: #cccccc; word-break: break-all;">
+              Si el botón no abre automáticamente, copia y pega el siguiente enlace directo en tu navegador:<br>
+              <a href="${enlaceRecuperacion}" target="_blank" style="color: #007BFF;">${enlaceRecuperacion}</a>
+            </p>
+
+            <p style="font-size: 12px; color: #aaaaaa; margin-top: 20px;">Si tú no solicitaste este cambio, puedes ignorar este mensaje de forma segura.</p>
           </div>
         `
       })
