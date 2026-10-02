@@ -156,18 +156,35 @@ app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
 
     const usuario = consulta.rows[0];
 
+    // Token con expiración de 1 hora
     const tokenRecuperacion = jwt.sign(
       { id: usuario.id_usuario, email },
       JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-    const baseUrl = process.env.FRONTEND_URL || 'https://americanos-hh.netlify.app';
-    const enlaceRecuperacion = `${baseUrl}/login?resetToken=${tokenRecuperacion}`;
+    // URL limpia sin depender de variables con corchetes
+    const enlaceRecuperacion = `https://americanos-hh.netlify.app/login?resetToken=${tokenRecuperacion}`;
 
-    const textoPlano = `Hola ${usuario.nombre || 'Cliente'},\n\nHemos recibido una solicitud para restablecer la contraseña de tu cuenta en Americanoshh.\n\nHaz clic o copia el siguiente enlace para restablecer tu contraseña:\n${enlaceRecuperacion}\n\nEste enlace expira en 1 hora.`;
+    const htmlBody = `
+      <div style="font-family: Arial, sans-serif; background-color: #121212; color: #ffffff; padding: 25px; border-radius: 10px;">
+        <h2 style="color: #007BFF; text-align: center;">Americanoshh</h2>
+        <p>Hola, <strong>${usuario.nombre || 'Cliente'}</strong>.</p>
+        <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.</p>
+        <p>Haz clic en el siguiente botón para crear una nueva contraseña (expira en 1 hora):</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${enlaceRecuperacion}" target="_blank" style="background-color: #007BFF; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Restablecer Contraseña</a>
+        </div>
 
-    const htmlBody = `<div style="font-family: Arial, sans-serif; background-color: #121212; color: #ffffff; padding: 25px; border-radius: 10px;"><h2 style="color: #007BFF; text-align: center;">Americanoshh</h2><p>Hola, <strong>${usuario.nombre || 'Cliente'}</strong>.</p><p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta.</p><p>Haz clic en el siguiente botón para crear una nueva contraseña (expira en 1 hora):</p><div style="text-align: center; margin: 30px 0;"><a href="${enlaceRecuperacion}" target="_blank" style="background-color: #007BFF; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Restablecer Contraseña</a></div><p style="font-size: 13px; color: #cccccc; word-break: break-all;">Si el botón no responde, copia y pega el siguiente enlace directo en tu navegador:<br><br><a href="${enlaceRecuperacion}" target="_blank" style="color: #007BFF;">${enlaceRecuperacion}</a></p></div>`;
+        <p style="font-size: 13px; color: #cccccc; word-break: break-all;">
+          Si el botón no abre automáticamente, copia y pega este enlace directo en tu navegador:<br><br>
+          <a href="${enlaceRecuperacion}" target="_blank" style="color: #007BFF;">${enlaceRecuperacion}</a>
+        </p>
+
+        <p style="font-size: 12px; color: #aaaaaa; margin-top: 20px;">Si tú no solicitaste este cambio, puedes ignorar este mensaje de forma segura.</p>
+      </div>
+    `;
 
     const respuestaResend = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -179,7 +196,6 @@ app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
         from: 'Americanoshh Support <onboarding@resend.dev>',
         to: [email],
         subject: 'Recuperación de Contraseña — Americanoshh',
-        text: textoPlano,
         html: htmlBody
       })
     });
