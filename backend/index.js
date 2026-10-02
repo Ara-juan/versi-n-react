@@ -59,11 +59,10 @@ const verificarAdmin = (req, res, next) => {
   }
 };
 
-// Router principal para soportar tanto rutas con /api como sin prefijo
-const router = express.Router();
+/* ------------------- RUTAS DE USUARIOS ------------------- */
 
 // Registro de usuarios
-router.post('/usuarios/registro', async (req, res) => {
+app.post('/api/usuarios/registro', async (req, res) => {
   const { nombre, email, contrasena, telefono, direccion } = req.body;
 
   if (!nombre || !email || !contrasena) {
@@ -106,7 +105,7 @@ router.post('/usuarios/registro', async (req, res) => {
 });
 
 // Login
-router.post('/usuarios/login', async (req, res) => {
+app.post('/api/usuarios/login', async (req, res) => {
   const { email, contrasena } = req.body;
 
   if (!email || !contrasena) {
@@ -151,8 +150,8 @@ router.post('/usuarios/login', async (req, res) => {
   }
 });
 
-// RECUPERACIÓN DE CONTRASEÑA: Solicitar enlace por correo
-router.post('/usuarios/recuperar-contrasena', async (req, res) => {
+// RECUPERACIÓN DE CONTRASEÑA: Solicitar correo con enlace
+app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
   const { email } = req.body;
 
   if (!email) {
@@ -203,8 +202,8 @@ router.post('/usuarios/recuperar-contrasena', async (req, res) => {
   }
 });
 
-// RECUPERACIÓN DE CONTRASEÑA: Restablecer contraseña con token
-router.post('/usuarios/restablecer-contrasena', async (req, res) => {
+// RECUPERACIÓN DE CONTRASEÑA: Restablecer contraseña con el token
+app.post('/api/usuarios/restablecer-contrasena', async (req, res) => {
   const { token, nuevaContrasena } = req.body;
 
   if (!token || !nuevaContrasena) {
@@ -228,7 +227,7 @@ router.post('/usuarios/restablecer-contrasena', async (req, res) => {
 });
 
 // Perfil
-router.get('/usuarios/perfil', verificarToken, async (req, res) => {
+app.get('/api/usuarios/perfil', verificarToken, async (req, res) => {
   try {
     const usuario = await pool.query(
       'SELECT id_usuario, nombre, email, telefono, direccion, rol FROM usuarios WHERE id_usuario = $1',
@@ -245,8 +244,8 @@ router.get('/usuarios/perfil', verificarToken, async (req, res) => {
   }
 });
 
-// Actualizar perfil
-router.put('/usuarios/perfil', verificarToken, async (req, res) => {
+// Actualizar Perfil
+app.put('/api/usuarios/perfil', verificarToken, async (req, res) => {
   const userId = req.usuario.id;
   const { contrasenaActual, nuevaContrasena, telefono, direccion } = req.body;
 
@@ -297,7 +296,7 @@ router.put('/usuarios/perfil', verificarToken, async (req, res) => {
 });
 
 // Eliminar Usuario
-router.delete('/usuarios/:id', verificarToken, async (req, res) => {
+app.delete('/api/usuarios/:id', verificarToken, async (req, res) => {
   const { id } = req.params;
   const esAdmin = req.usuario.rol === 'ADMINISTRADOR' || req.usuario.rol === 'admin';
   if (req.usuario.id !== parseInt(id, 10) && !esAdmin) {
@@ -317,8 +316,9 @@ router.delete('/usuarios/:id', verificarToken, async (req, res) => {
   }
 });
 
-// CRUD Productos
-router.get('/productos', async (req, res) => {
+/* ------------------- RUTAS DE PRODUCTOS ------------------- */
+
+app.get('/api/productos', async (req, res) => {
   const { categoria } = req.query;
 
   try {
@@ -339,7 +339,7 @@ router.get('/productos', async (req, res) => {
   }
 });
 
-router.get('/productos/:id', async (req, res) => {
+app.get('/api/productos/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -355,7 +355,7 @@ router.get('/productos/:id', async (req, res) => {
   }
 });
 
-router.post('/productos', verificarToken, verificarAdmin, async (req, res) => {
+app.post('/api/productos', verificarToken, verificarAdmin, async (req, res) => {
   const { titulo, descripcion, precio, imagen_url, categoria, tallas } = req.body;
 
   if (!titulo || !precio || !imagen_url || !categoria) {
@@ -389,7 +389,7 @@ router.post('/productos', verificarToken, verificarAdmin, async (req, res) => {
   }
 });
 
-router.put('/productos/:id', verificarToken, verificarAdmin, async (req, res) => {
+app.put('/api/productos/:id', verificarToken, verificarAdmin, async (req, res) => {
   const { id } = req.params;
   const { titulo, descripcion, precio, imagen_url, categoria, tallas, estado } = req.body;
 
@@ -426,7 +426,7 @@ router.put('/productos/:id', verificarToken, verificarAdmin, async (req, res) =>
   }
 });
 
-router.delete('/productos/:id', verificarToken, verificarAdmin, async (req, res) => {
+app.delete('/api/productos/:id', verificarToken, verificarAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -442,12 +442,7 @@ router.delete('/productos/:id', verificarToken, verificarAdmin, async (req, res)
   }
 });
 
-// Registrar las rutas en Express con y sin el prefijo /api
-app.use('/api', router);
-app.use('/', router);
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor de Urban Clothes activo en el puerto ${PORT}`);
-  console.log(`Rutas de recuperación disponibles en /api/usuarios/recuperar-contrasena`);
 });
