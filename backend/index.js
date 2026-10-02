@@ -25,12 +25,17 @@ if (!JWT_SECRET) {
   process.exit(1);
 }
 
-// Configuración del servicio de correo con Nodemailer (Gmail)
+// Configuración de Nodemailer explícita (Puerto 465 SSL) para evitar timeouts en Render
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true, // Usa conexión SSL segura desde el inicio
   auth: {
     user: process.env.EMAIL_USER || 'dcuentapro@gmail.com',
     pass: process.env.EMAIL_PASS
+  },
+  tls: {
+    rejectUnauthorized: false // Previene bloqueos de cert en entornos serverless/cloud
   }
 });
 
