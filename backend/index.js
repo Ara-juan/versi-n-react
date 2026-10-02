@@ -19,6 +19,8 @@ app.use(express.json());
 const SALT_ROUNDS = 10;
 const JWT_SECRET = process.env.JWT_SECRET;
 
+//comprobamos la presencia de JWT_SECRET antes de arrancar
+// y detenemos la ejecución inmediatamente si falta para evitar que la app funcione sin seguridad
 if (!JWT_SECRET) {
   console.error("ERROR FATAL: JWT_SECRET no está definida en el archivo .env");
   process.exit(1);
@@ -49,7 +51,7 @@ const verificarAdmin = (req, res, next) => {
   }
 };
 
-/* ------------------- RUTAS DE USUARIOS ------------------- */
+// RUTAS DE USUARIOS:
 
 // Registro de usuarios
 app.post('/api/usuarios/registro', async (req, res) => {
@@ -140,7 +142,9 @@ app.post('/api/usuarios/login', async (req, res) => {
   }
 });
 
-// RECUPERACIÓN DE CONTRASEÑA: Enviar correo mediante Resend API HTTP
+// recuperar contraseña, enviar correo mediante Resend API HTTP
+// endpoint para iniciar la recuperación de la contraseña.
+// genera un token temporal y envia un correo maquetado en HTLM utilizando la API de resend
 app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
   const { email } = req.body;
 
@@ -156,16 +160,18 @@ app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
 
     const usuario = consulta.rows[0];
 
-    // Token con expiración de 1 hora
+    //Creamos un token JWT firmado exclusivo para recuperar la contraseña, con una validez corta de 1 hora
     const tokenRecuperacion = jwt.sign(
       { id: usuario.id_usuario, email },
       JWT_SECRET,
       { expiresIn: '1h' }
     );
 
-    // URL limpia sin depender de variables con corchetes
+    //Enlace apuntando al cliente en Netlify pasando el token en la URL como parámetro de consulta 
+    // o sea; URL limpia sin depender de variables con corchetes
     const enlaceRecuperacion = `https://americanos-hh.netlify.app/login?resetToken=${tokenRecuperacion}`;
 
+    // Plantilla HTML con estilos inline optimizada para clientes de correo (Outlook, Gmail, Apple Mail)
     const htmlBody = `
       <div style="font-family: Arial, sans-serif; background-color: #121212; color: #ffffff; padding: 25px; border-radius: 10px;">
         <h2 style="color: #007BFF; text-align: center;">Americanoshh</h2>
@@ -186,6 +192,7 @@ app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
       </div>
     `;
 
+    // Petición HTTP directa a la API REST de Resend usando la API Key configurada en variables de entorno
     const respuestaResend = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -213,7 +220,7 @@ app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
   }
 });
 
-// RECUPERACIÓN DE CONTRASEÑA: Restablecer contraseña con el token
+// recuperacion de contraseña, o sea restablecer contraseña con el token
 app.post('/api/usuarios/restablecer-contrasena', async (req, res) => {
   const { token, nuevaContrasena } = req.body;
 
@@ -226,7 +233,9 @@ app.post('/api/usuarios/restablecer-contrasena', async (req, res) => {
   }
 
   try {
+    // Si el token fue alterado o ya pasó la hora de expiración, jwt.verify lanzará un error y caerá en el catch
     const verificado = jwt.verify(token, JWT_SECRET);
+    // Encriptamos la nueva clave antes de persistirla en la base de datos
     const passwordHash = await bcrypt.hash(nuevaContrasena, SALT_ROUNDS);
 
     await pool.query('UPDATE usuarios SET contrasena = $1 WHERE id_usuario = $2', [passwordHash, verificado.id]);
@@ -327,7 +336,7 @@ app.delete('/api/usuarios/:id', verificarToken, async (req, res) => {
   }
 });
 
-/* ------------------- RUTAS DE PRODUCTOS ------------------- */
+// rutas de productos
 
 app.get('/api/productos', async (req, res) => {
   const { categoria } = req.query;
@@ -366,6 +375,7 @@ app.get('/api/productos/:id', async (req, res) => {
   }
 });
 
+// Permite a los administradores registrar nuevos artículos en el inventario
 app.post('/api/productos', verificarToken, verificarAdmin, async (req, res) => {
   const { titulo, descripcion, precio, imagen_url, categoria, tallas } = req.body;
 
