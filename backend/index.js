@@ -188,8 +188,8 @@ app.post('/api/usuarios/recuperar-contrasena', async (req, res) => {
             </div>
 
             <p style="font-size: 13px; color: #cccccc; word-break: break-all;">
-              Si el botón no abre automáticamente, copia y pega el siguiente enlace directo en tu navegador:<br>
-              <a href="${enlaceRecuperacion}" target="_blank" style="color: #007BFF;">${enlaceRecuperacion}</a>
+              Si el botón no abre automáticamente, copia y pega el siguiente enlace directo en tu navegador:<br><br>
+              <a href="${enlaceRecuperacion}" target="_blank" style="color: #007BFF; text-decoration: underline;">${enlaceRecuperacion}</a>
             </p>
 
             <p style="font-size: 12px; color: #aaaaaa; margin-top: 20px;">Si tú no solicitaste este cambio, puedes ignorar este mensaje de forma segura.</p>
