@@ -1,5 +1,4 @@
 // Cliente de Supabase para subida directa de imágenes al bucket "Imagenes"
-// (mismas credenciales que la versión original)
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = 'https://duuuqlbabwmidigdeybd.supabase.co';
@@ -7,7 +6,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Sube una imagen al bucket "Imagenes" (carpeta prendas/) y devuelve su URL pública
+// Sube una imagen al bucket "Imagenes" y devuelve su URL pública
 export async function subirImagenASupabase(file) {
   const fileExt = file.name.split('.').pop();
   const fileName = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${fileExt}`;

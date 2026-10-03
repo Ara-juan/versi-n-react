@@ -19,7 +19,7 @@ function authHeaders() {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-/* ---------- PRODUCTOS ---------- */
+//productos:
 
 export async function obtenerProductos(categoria) {
   const url = categoria ? `${API_BASE}/productos?categoria=${encodeURIComponent(categoria)}` : `${API_BASE}/productos`;
@@ -59,7 +59,7 @@ export async function eliminarProducto(id) {
   );
 }
 
-/* ---------- USUARIOS ---------- */
+//usuarios:
 
 export async function registrarUsuario({ nombre, email, contrasena, telefono, direccion }) {
   return manejarRespuesta(
