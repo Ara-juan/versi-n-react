@@ -1,12 +1,24 @@
-/*estilos de la página principal (de la landing page principal)*/
+/* estilos de la landing page principal */
 .inicio-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  text-align: center; /* Asegura centrado general de textos */
+  text-align: center; /* asegura el centrado general de textos */
   backdrop-filter: brightness(0.9);
+}
+
+/* clase de utilidad para ocultar textos visualmente pero dejarlos visibles para google y lectores de pantalla */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 
 .inicio-container .logo {
@@ -24,7 +36,7 @@
   color: white;
 }
 
-/* Flexbox para centrar botones y textos verticalmente */
+/* flexbox para centrar botones y textos verticalmente */
 .buttons {
   display: flex;
   flex-direction: column;
@@ -38,6 +50,7 @@
   margin: 12px 0 6px 0;
   font-size: 14px;
   text-align: center;
+  color: #e0e0e0; /* un gris muy claro para mejor contraste sobre el fondo oscuro */
 }
 
 .buttons a {
@@ -46,8 +59,9 @@
 }
 
 .buttons .btn {
-  background-color: #007BFF; 
-  color: white;
+  background-color: var(--bs-primary, #4da3ff); /* aplicamos el azul claro del navbar */
+  color: #111; /* texto oscuro sobre botón claro es la regla de oro para la accesibilidad */
+  font-weight: bold;
   border: none;
   padding: 12px 24px;
   margin: 4px 0 12px 0;
@@ -55,12 +69,11 @@
   cursor: pointer;
   font-size: 16px;
   transition: background 0.3s ease;
-  min-width: 140px; /* Ancho uniforme para ambos botones */
+  min-width: 140px; /* ancho uniforme para ambos botones */
 }
 
 .buttons .btn:hover {
-  background-color: #0056b3;
-  color: white;
+  background-color: #338cf0;
 }
 
 .footer-link {
@@ -69,7 +82,7 @@
 }
 
 .footer-link:hover {
-  color: #00ffcc;
+  color: #4da3ff; /* usamos el mismo color temático al pasar el mouse */
 }
 
 .footer {

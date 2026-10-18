@@ -1,4 +1,4 @@
-// Página Catálogo, muestra todos los productos activos 
+// página catálogo, muestra todos los productos activos 
 import { useState } from 'react';
 import useProductos from '../hooks/useProductos.js';
 import ListaProductos from '../components/ListaProductos.jsx';
@@ -10,7 +10,13 @@ export default function Catalogo() {
 
   return (
     <main className="catalog">
-      <h2>Ropa</h2>
+      {/* metadatos seo para la vista completa del catálogo */}
+      <title>Catálogo de Ropa Urbana | Americanoshh</title>
+      <meta name="description" content="explora todo nuestro catálogo de ropa. camisetas, hoodies y accesorios exclusivos del streetwear." />
+
+      {/* cambiamos h2 por h1 ya que es el título principal de la vista */}
+      <h1>Catálogo de Ropa</h1>
+      
       <ListaProductos
         productos={productos}
         cargando={cargando}

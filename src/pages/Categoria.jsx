@@ -1,5 +1,4 @@
-// Página genérica de categoría: usada por las rutas /hombre, /mujer y /unisex
-
+// página genérica de categoría: usada por las rutas /hombre, /mujer y /unisex
 import { useState } from 'react';
 import useProductos from '../hooks/useProductos.js';
 import ListaProductos from '../components/ListaProductos.jsx';
@@ -11,7 +10,13 @@ export default function Categoria({ categoria, titulo }) {
 
   return (
     <main className="catalog">
-      <h2>{titulo}</h2>
+      {/* metadatos dinámicos que cambian automáticamente según la categoría seleccionada */}
+      <title>{`${titulo} - Ropa Urbana | Americanoshh`}</title>
+      <meta name="description" content={`descubre nuestra ${titulo.toLowerCase()}. prendas exclusivas y streetwear para ${categoria}.`} />
+
+      {/* también cambiamos este h2 a h1 para mantener la estructura semántica sana */}
+      <h1>{titulo}</h1>
+      
       <ListaProductos
         productos={productos}
         cargando={cargando}
