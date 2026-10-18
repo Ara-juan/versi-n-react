@@ -1,4 +1,3 @@
-// Barra de navegación con Bootstrap y React Router
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useFiltros } from '../context/FiltrosContext.jsx';
@@ -6,17 +5,18 @@ import { cerrarSesion } from '../services/api.js';
 import './Navbar.css';
 
 export default function Navbar() {
-  //Consumo de contextos globales para autenticación y filtros de busqueda
+  // traemos la info del usuario y las herramientas de filtrado desde el contexto
   const { sesionActiva, usuario, esAdmin, cerrarSesionLocal } = useAuth();
   const { busqueda, setBusqueda, precioMax, setPrecioMax } = useFiltros();
-  //Hooks de react router para navegación y lectura de la url actual
+  
+  // hooks básicos para mover al usuario de una vista a otra
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Aplica la posición fija ('navbar-fija') solo cuando el usuario está en vistas administrativas o de perfil
+  // hacemos que el nav se quede pegado arriba solo si estamos en perfil o admin
   const esFija = location.pathname === '/perfil' || location.pathname === '/admin-productos';
   
-  //Arreglo con la estructura del menú para generar enlaces dinámicamente mediante un map
+  // listado de páginas principales para pintar el menú fácilmente
   const enlaces = [
     { ruta: '/catalogo', texto: 'Catálogo' },
     { ruta: '/hombre', texto: 'Hombre' },
@@ -26,7 +26,7 @@ export default function Navbar() {
     { ruta: '/acerca-de', texto: 'Acerca de' }
   ];
 
-  // Limpia la sesión tanto en la API/localStorage como en el estado local de React,y redirecciona a la pantalla de login
+  // borramos datos de sesión y mandamos al usuario al login
   const manejarCerrarSesion = () => {
     cerrarSesion();
     cerrarSesionLocal();
@@ -35,10 +35,12 @@ export default function Navbar() {
 
   return (
     <header>
-      <nav className={`navbar ${esFija ? 'navbar-fija' : ''}`}>
+      {/* le indicamos a los motores de búsqueda que esta es la navegación principal */}
+      <nav className={`navbar ${esFija ? 'navbar-fija' : ''}`} aria-label="navegación principal">
         <div className="logo">
-          <Link to="/acerca-de">
-            <img src="/assets/logo.png" alt="Logo Americanoshh" />
+          {/* el logo siempre debe llevar de vuelta al inicio y tener un alt claro */}
+          <Link to="/acerca-de" aria-label="ir al inicio de americanoshh">
+            <img src="/assets/logo.png" alt="logo de americanoshh" />
           </Link>
         </div>
 
@@ -57,22 +59,32 @@ export default function Navbar() {
           </li>
         </ul>
 
-        <div className="search-bar">
+        {/* cambiamos un simple div por un formulario real para mejorar el seo y accesibilidad */}
+        <form 
+          className="search-bar" 
+          role="search" 
+          onSubmit={(e) => e.preventDefault()}
+        >
           <input
-            type="text"
+            type="search"
+            aria-label="buscar prendas por nombre"
             placeholder="Buscar productos..."
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
           />
-          <select value={precioMax} onChange={(e) => setPrecioMax(e.target.value)}>
+          <select 
+            aria-label="filtrar por precio" 
+            value={precioMax} 
+            onChange={(e) => setPrecioMax(e.target.value)}
+          >
             <option value="all">Todos los precios</option>
             <option value="50000">Hasta $50.000</option>
             <option value="60000">Hasta $60.000</option>
           </select>
-          <button type="button" aria-label="Buscar">🔍</button>
-        </div>
+          <button type="submit" aria-label="iniciar búsqueda">🔍</button>
+        </form>
 
-        {/* Menú de usuario dinámico (reemplaza al contenedor userMenuNav) */}
+        {/* zona de perfil, botones de login o administración */}
         <div className="menu-usuario d-flex align-items-center ms-3">
           {sesionActiva ? (
             <>

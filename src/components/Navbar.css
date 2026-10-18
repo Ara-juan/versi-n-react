@@ -1,4 +1,4 @@
-/* NAVBAR, estructura principal de la barra de navegación */
+/* base de nuestra barra de navegación superior */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -6,13 +6,14 @@
   background: rgba(0, 0, 0, 0.8);
   padding: 15px 30px;
 }
-/* Variante fijada al borde superior de la pantalla*/
+
+/* clase extra para cuando necesitamos que el nav persiga al usuario al hacer scroll */
 .navbar.navbar-fija {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1050; /* Prioridad de superposición por encima de casi cualquier otro elemento */
+  z-index: 1050; /* nos aseguramos que siempre esté por encima del resto del contenido */
   backdrop-filter: blur(5px);
   background: rgba(0, 0, 0, 0.85);
 }
@@ -27,7 +28,8 @@
   height: auto;
   display: block;
 }
-/* Menú horizontal de navegación */
+
+/* lista de enlaces horizontales */
 .nav-links {
   list-style: none;
   display: flex;
@@ -42,15 +44,18 @@
   font-weight: bold;
   transition: color 0.2s ease;
 }
-/* Cambia de color al pasar el cursor */
+
+/* cambiamos el azul oscuro por uno más claro (#4da3ff) para no cansar la vista en fondos negros */
 .nav-links li a:hover {
-  color: var(--bs-primary, #007BFF);
+  color: var(--bs-primary, #4da3ff);
 }
-/* Resalta en tono neón la sección o página donde se encuentra ubicado el usuario actualmente */
+
+/* iluminamos la sección donde está el usuario actualmente */
 .nav-links li a.active {
-  color: #007BFF;
+  color: #4da3ff;
 }
-/* Contenedor flexible que agrupa el selector de precio, el campo de texto y el botón de búsqueda */
+
+/* zona donde agrupamos el input, el select de precios y el botón */
 .search-bar {
   display: flex;
   gap: 8px;
@@ -72,14 +77,15 @@
   cursor: pointer;
 }
 
+/* reborde azul claro al hacer clic en el selector */
 .search-bar select:focus {
-  border: 1px solid var(--bs-primary, #007BFF);
+  border: 1px solid var(--bs-primary, #4da3ff);
 }
 
 .search-bar button {
-  background: var(--bs-primary, #007BFF);
+  background: var(--bs-primary, #4da3ff);
   border: none;
-  color: white;
+  color: #111; /* texto o ícono oscuro hace mejor contraste con el botón azul claro */
   padding: 6px 10px;
   border-radius: 4px;
   cursor: pointer;
@@ -87,16 +93,18 @@
 }
 
 .search-bar button:hover {
-  background: #0056b3;
+  background: #338cf0;
 }
-/*Ajustes para pantallas pequeñas */
+
+/* reglas para que se vea bien en celulares y tablets pequeñas */
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
     gap: 15px;
     padding: 15px;
   }
-  /* Desactiva la posición fija en móviles para evitar que la barra ocupe demasiado espacio en la pantalla */
+  
+  /* quitamos la posición fija en móviles porque quita mucho espacio útil de pantalla */
   .navbar.navbar-fija {
     position: relative;
   }
@@ -106,7 +114,8 @@
     justify-content: center;
     gap: 10px;
   }
-  /* Expande la barra de búsqueda para centrarla en dispositivos móviles */
+  
+  /* estiramos el buscador para que ocupe todo el ancho disponible */
   .search-bar {
     width: 100%;
     justify-content: center;
@@ -116,7 +125,8 @@
     flex: 1;
     max-width: 180px;
   }
-  /* Alineación de las opciones de sesión o perfil del usuario */
+  
+  /* centramos los botones de perfil y salir */
   .menu-usuario {
     margin-left: 0;
     justify-content: center;

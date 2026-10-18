@@ -12,14 +12,15 @@ import AdminProductos from './pages/AdminProductos.jsx';
 export default function App() {
   const location = useLocation();
 
-  // Definimos las rutas donde NO queremos mostrar el Navbar
+  // listamos las rutas donde preferimos ocultar la barra de navegación superior
   const rutasSinNavbar = ['/', '/login'];
 
   return (
     <>
-      {/* Muestra la Navbar solo si la ruta actual no está en la lista */}
+      {/* validamos si la ruta actual está en la lista negra para no mostrar el nav */}
       {!rutasSinNavbar.includes(location.pathname) && <Navbar />}
 
+      {/* aquí declaramos todas las pantallas de la tienda */}
       <Routes>
         <Route path="/" element={<Inicio />} />
         <Route path="/colecciones" element={<Colecciones />} />
@@ -31,7 +32,8 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/admin-productos" element={<AdminProductos />} />
-        {/* Ruta desconocida: regresa al inicio */}
+        
+        {/* si el usuario se inventa una url o escribe mal, lo devolvemos al inicio */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
