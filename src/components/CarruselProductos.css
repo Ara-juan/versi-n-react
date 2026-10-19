@@ -89,3 +89,22 @@
   }
   .products .card img { height: 140px; }
 }
+
+/* estados del carrusel (carga, error, vacío) */
+.estado-carga {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.estado-error {
+  color: #ff6b75;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.estado-vacio {
+  color: #e0e0e0;
+  font-style: italic;
+  font-size: 1.1rem;
+}

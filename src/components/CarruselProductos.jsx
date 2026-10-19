@@ -14,17 +14,17 @@ export default function CarruselProductos({ productos, cargando, error, onVerDet
     contenedor.scrollBy({ left: contenedor.offsetWidth * direccion, behavior: 'smooth' });
   };
 
-  // retornos tempranos para controlar las fases de carga y error
+  // retornos tempranos para controlar las fases de carga y error usando las clases css personalizadas
   if (cargando) {
-    return <div className="text-center w-100 py-4 text-white" role="status">cargando colección...</div>;
+    return <div className="text-center w-100 py-4 estado-carga" role="status">cargando colección...</div>;
   }
 
   if (error) {
-    return <div className="text-center w-100 py-4 text-warning" role="alert">error al conectar con el servidor de productos.</div>;
+    return <div className="text-center w-100 py-4 estado-error" role="alert">error al conectar con el servidor de productos.</div>;
   }
 
   if (productos.length === 0) {
-    return <div className="text-center w-100 py-4 text-white" role="status">no hay prendas disponibles en esta colección por el momento.</div>;
+    return <div className="text-center w-100 py-4 estado-vacio" role="status">no hay prendas disponibles en esta colección por el momento.</div>;
   }
 
   return (
