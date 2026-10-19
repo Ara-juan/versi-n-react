@@ -1,39 +1,39 @@
-
 import { createContext, useContext, useState, useMemo } from 'react';
 
-//Creamos el contexto de autenticacion con un valor inicial nulo
-// el cual serivira como el almacen central del estado del usuario para toda la aplicacion
+// creamos el contexto de autenticación como almacén central del usuario
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  //Iniciamos el estado del usuario letendo el "localstorage"
-  //usamos una funcion de inicializacion para que la lectura del almacenamiento local solo se ejecute una vez
+  // iniciamos el estado leyendo el almacenamiento local una sola vez
   const [usuario, setUsuario] = useState(() => {
     try {
       const raw = localStorage.getItem('urban_user');
       return raw ? JSON.parse(raw) : null;
     } catch {
-      //Si el JSON guardado es inválido o ocurre un error de lectura, retornamos null de forma segura
+      // si el json es inválido, retornamos null por seguridad
       return null;
     }
   });
-  //Memorizamos el objeto de contexto con 'useMemo' para evitar re-renders innecesarios
+
+  // memorizamos el objeto de contexto para evitar re-renders innecesarios
   const valor = useMemo(() => {
     const token = localStorage.getItem('urban_token');
-    //Una sesion se considera activa solo si existen tanto el token como los datos del usuario
+    
+    // validamos si la sesión está activa
     const sesionActiva = Boolean(token && usuario);
-    //Verificacion flexibilizada para determinar si el usuario es administrador
+    
+    // verificación flexibilizada de roles
     const esAdmin = usuario ? usuario.rol === 'ADMINISTRADOR' || usuario.rol === 'admin' : false;
 
     return {
       usuario,
       sesionActiva,
       esAdmin,
-      //Actualiza el estado local cuando el usuario inicia sesion exitosamente
+      // actualiza el estado local al iniciar sesión
       iniciarSesionLocal(nuevoUsuario) {
         setUsuario(nuevoUsuario);
       },
-      //Limpia el token y los datos guardados en el navegador al cerrar sesión
+      // limpia el token y los datos guardados al salir
       cerrarSesionLocal() {
         localStorage.removeItem('urban_token');
         localStorage.removeItem('urban_user');
@@ -45,7 +45,7 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={valor}>{children}</AuthContext.Provider>;
 }
 
-// Hook para usar la sesión en cualquier componente
+// hook para usar la sesión en cualquier parte
 export function useAuth() {
   const contexto = useContext(AuthContext);
   if (!contexto) {

@@ -1,44 +1,44 @@
-// Carrusel horizontal de productos con flechas de navegación 
+// carrusel horizontal de productos con flechas de navegación 
 import { useRef } from 'react';
 import ProductoCard from './ProductoCard.jsx';
 import './CarruselProductos.css';
 
 export default function CarruselProductos({ productos, cargando, error, onVerDetalle }) {
-  // useRef es para guardar una referencia directa al nodo del DOM del contenedor (.products)
-  // sin provocar que el componente se vuelva a renderizar cuando su valor cambia.
+  // useref guarda una referencia directa al nodo del dom sin provocar renders extra
   const contenedorRef = useRef(null);
 
-  // Desplaza el carrusel horizontalmente 
+  // desplaza el carrusel horizontalmente de forma suave
   const desplazar = (direccion) => {
     const contenedor = contenedorRef.current;
     if (!contenedor) return;
     contenedor.scrollBy({ left: contenedor.offsetWidth * direccion, behavior: 'smooth' });
   };
-// Retornos tempranos para controlar las 3 fases previas a mostrar la lista:
-// 1. Estado de carga activa desde el API.
+
+  // retornos tempranos para controlar las fases de carga y error
   if (cargando) {
-    return <div className="text-center w-100 py-4 text-muted">Cargando colección...</div>;
+    return <div className="text-center w-100 py-4 text-muted" role="status">cargando colección...</div>;
   }
-// 2. Manejo de fallos en la petición HTTP.
+
   if (error) {
-    return <div className="text-center w-100 py-4 text-warning">Error al conectar con el servidor de productos.</div>;
+    return <div className="text-center w-100 py-4 text-warning" role="alert">error al conectar con el servidor de productos.</div>;
   }
-//3. Respuesta vacía cuando la colección no tiene elementos para renderizar.
+
   if (productos.length === 0) {
-    return <div className="text-center w-100 py-4 text-muted">No hay prendas disponibles en esta colección por el momento.</div>;
+    return <div className="text-center w-100 py-4 text-muted" role="status">no hay prendas disponibles en esta colección por el momento.</div>;
   }
 
   return (
-    <div className="carousel-container">
-      <button className="arrow left-arrow" onClick={() => desplazar(-1)} aria-label="Anterior">&#10094;</button>
+    // envolvemos en un section con etiqueta aria para mejorar la semántica
+    <section className="carousel-container" aria-label="carrusel de prendas destacadas">
+      <button className="arrow left-arrow" onClick={() => desplazar(-1)} aria-label="ver productos anteriores">&#10094;</button>
 
-      <div className="products" ref={contenedorRef}>
+      <div className="products" ref={contenedorRef} tabIndex="0" aria-label="lista desplazable de productos">
         {productos.map((producto) => (
           <ProductoCard key={producto.id_producto} producto={producto} onVerDetalle={onVerDetalle} />
         ))}
       </div>
 
-      <button className="arrow right-arrow" onClick={() => desplazar(1)} aria-label="Siguiente">&#10095;</button>
-    </div>
+      <button className="arrow right-arrow" onClick={() => desplazar(1)} aria-label="ver más productos">&#10095;</button>
+    </section>
   );
 }

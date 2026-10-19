@@ -1,46 +1,47 @@
-/* Cuadrícula y tarjetas del catálogo (limita el ancho
-del catálogo para evitar que se estira de mas en pantallas 
-ultra anchas) */
+/* cuadrícula y tarjetas del catálogo */
 .catalog {
   padding: 40px 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
-/* Subrayado decorativo del título que usa una variable de Bootstrap como color primario,
-   o azul como color de respaldo ('fallback') si la variable no existe. */
-.catalog h2 {
+
+/* subrayado decorativo del título que usa la nueva variable de color primario accesible */
+.catalog h1, .catalog h2 {
   margin-bottom: 20px;
-  border-bottom: 2px solid var(--bs-primary, #007BFF);
+  border-bottom: 2px solid var(--bs-primary, #4da3ff);
   display: inline-block;
   color: white;
 }
 
-/* Usamos CSS Grid en lugar de flexbox para controlar exactamente las columnas */
+/* usamos css grid en lugar de flexbox para controlar exactamente las columnas */
 .catalog-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3 productos por fila en pantallas grandes */
-  gap: 20px; /* Espacio uniforme entre filas y columnas*/
+  gap: 20px;
   padding-top: 10px;
   padding-bottom: 10px;
 }
-/* Tarjeta con fondo oscuro semi transparente*/
+
+/* tarjeta con fondo oscuro semi transparente */
 .card {
   background: rgba(0, 0, 0, 0.7);
   border: none;
   border-radius: 10px;
   padding: 15px;
-  width: 100%; /* El ancho lo controla el grid */
+  width: 100%;
   box-sizing: border-box;
   color: white;
   cursor: pointer;
   text-align: center;
   transition: transform 0.2s ease-in-out;
 }
-/* Efecto sutil de ampliación al pasar el mouse para indicar que la tarjeta es interactiva */
+
+/* efecto sutil de ampliación al pasar el mouse */
 .card:hover {
   transform: scale(1.02);
 }
-/* La imagen se adapta al 100% del ancho de la tarjeta manteniendo su proporción original */
+
+/* la imagen se adapta al 100% del ancho de la tarjeta manteniendo su proporción original */
 .card img {
   width: 100%;
   border-radius: 8px;
@@ -62,39 +63,26 @@ ultra anchas) */
   color: #ccc;
 }
 
-/* Responsivo para Tablets y Celulares (2 productos por fila) */
+/* responsivo para tablets y celulares (2 productos por fila) */
 @media (max-width: 768px) {
-  .catalog {
-    padding: 20px 10px;
-  }
-
+  .catalog { padding: 20px 10px; }
   .catalog-grid {
-    grid-template-columns: repeat(2, 1fr); /* Exactamente 2 columnas */
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
-
-  .card {
-    padding: 10px;
-  }
+  .card { padding: 10px; }
 }
 
-/* Ajustes para celulares móviles más pequeños */
+/* ajustes para celulares móviles más pequeños */
 @media (max-width: 480px) {
   .catalog-grid {
-    grid-template-columns: repeat(2, 1fr); /* Mantiene estrictamente 2 columnas */
+    grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
-
-  .card {
-    padding: 8px;
-  }
-
+  .card { padding: 8px; }
   .card h3 {
     font-size: 0.85rem;
     margin: 6px 0;
   }
-
-  .price {
-    font-size: 0.85rem;
-  }
+  .price { font-size: 0.85rem; }
 }

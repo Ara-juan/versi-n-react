@@ -1,5 +1,5 @@
-/* Página Login  */
-/*centra la tarjeta de inicio de sesion*/
+/* página de login y registro */
+/* centra la tarjeta de inicio de sesión */
 .login-container {
   text-align: center;
   width: 100%;
@@ -19,7 +19,7 @@
   align-self: center;
 }
 
-/*Tarjeta que envuelve el formulario pa diferenciar del fondo*/
+/* tarjeta que envuelve el formulario para diferenciarlo del fondo */
 .form-box {
   background: rgba(0, 0, 0, 0.7);
   padding: 30px;
@@ -34,17 +34,17 @@
   color: white;
 }
 
-/* Contenedor tipo segmento para cambiar dinámicamente entre 'Iniciar Sesión' y 'Registrarse' */
+/* contenedor tipo segmento para cambiar dinámicamente entre iniciar sesión y registrarse */
 .tabs {
   display: flex;
   justify-content: space-around;
   margin-bottom: 20px;
   border-radius: 6px;
-  overflow: hidden; /* Mantiene las esquinas redondeadas en los botones internos */
+  overflow: hidden; /* mantiene las esquinas redondeadas en los botones internos */
 }
 
 .tab {
-  flex: 1; /* Hace que ambas pestañas ocupen el mismo ancho (50% cada una) */
+  flex: 1; /* hace que ambas pestañas ocupen el mismo ancho */
   padding: 10px;
   border: none;
   cursor: pointer;
@@ -54,9 +54,10 @@
   transition: background 0.3s ease;
 }
 
-/* Resalta con color azul la pestaña actualmente activa */
+/* resalta con el azul accesible la pestaña actualmente activa y usa texto oscuro para contraste */
 .tab.active {
-  background: #007BFF;
+  background: var(--bs-primary, #4da3ff);
+  color: #111;
 }
 
 .form input {
@@ -68,22 +69,23 @@
   box-sizing: border-box;
 }
 
+/* botón de acción principal optimizado para accesibilidad */
 .form .btn {
   width: 100%;
   padding: 12px;
-  background: #007BFF;
+  background: var(--bs-primary, #4da3ff);
   border: none;
   border-radius: 6px;
-  color: white;
+  color: #111; /* texto oscuro sobre botón claro */
   font-size: 16px;
+  font-weight: bold;
   cursor: pointer;
   margin-top: 10px;
   transition: background 0.3s ease;
 }
 
 .form .btn:hover {
-  background: #0056b3;
-  color: white;
+  background: #338cf0;
 }
 
 .link {

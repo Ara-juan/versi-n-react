@@ -1,4 +1,4 @@
-// Página Login/Registro/Recuperación
+// página de login, registro y recuperación
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -52,7 +52,7 @@ export default function Login() {
 
       setTimeout(() => navigate('/colecciones'), 1000);
     } catch (error) {
-      mostrarMensaje(error.message || 'Error de conexión con el servidor.', true);
+      mostrarMensaje(error.message || 'error de conexión con el servidor.', true);
     } finally {
       setCargando(false);
     }
@@ -79,13 +79,12 @@ export default function Login() {
 
       setTimeout(() => setPestañaActiva('login'), 1500);
     } catch (error) {
-      mostrarMensaje(error.message || 'Error de conexión con el servidor.', true);
+      mostrarMensaje(error.message || 'error de conexión con el servidor.', true);
     } finally {
       setCargando(false);
     }
   };
 
-  // Solicitar el correo de recuperación
   const manejarSolicitudRecuperacion = async (event) => {
     event.preventDefault();
     setMensaje(null);
@@ -99,13 +98,12 @@ export default function Login() {
       mostrarMensaje(resultado.mensaje, false);
       event.target.reset();
     } catch (error) {
-      mostrarMensaje(error.message || 'No se pudo enviar el correo de recuperación.', true);
+      mostrarMensaje(error.message || 'no se pudo enviar el correo de recuperación.', true);
     } finally {
       setCargando(false);
     }
   };
 
-  // Establecer la nueva contraseña tras hacer clic en el enlace recibido por correo
   const manejarRestablecer = async (event) => {
     event.preventDefault();
     setMensaje(null);
@@ -123,23 +121,29 @@ export default function Login() {
         navigate('/login');
       }, 2000);
     } catch (error) {
-      mostrarMensaje(error.message || 'Error al restablecer contraseña.', true);
+      mostrarMensaje(error.message || 'error al restablecer contraseña.', true);
     } finally {
       setCargando(false);
     }
   };
 
   return (
-    <div className="login-container">
-      <Link to="/">
-        <img src="/assets/logo.png" alt="Logo Americanoshh" className="logo" />
+    // reemplazamos div por main y añadimos el seo básico
+    <main className="login-container">
+      <title>Ingresar o Registrarse | Americanoshh</title>
+      <meta name="description" content="inicia sesión en americanoshh para gestionar tu perfil y acceder a streetwear exclusivo." />
+
+      <Link to="/" aria-label="volver al inicio">
+        <img src="/assets/logo.png" alt="logo americanoshh" className="logo" />
       </Link>
 
-      <div className="form-box">
+      <section className="form-box" aria-live="polite">
         {pestañaActiva !== 'reset' && (
-          <div className="tabs">
+          <div className="tabs" role="tablist">
             <button
               type="button"
+              role="tab"
+              aria-selected={pestañaActiva === 'login'}
               className={`tab ${pestañaActiva === 'login' ? 'active' : ''}`}
               onClick={() => { setPestañaActiva('login'); setMensaje(null); }}
             >
@@ -147,6 +151,8 @@ export default function Login() {
             </button>
             <button
               type="button"
+              role="tab"
+              aria-selected={pestañaActiva === 'register'}
               className={`tab ${pestañaActiva === 'register' ? 'active' : ''}`}
               onClick={() => { setPestañaActiva('register'); setMensaje(null); }}
             >
@@ -155,67 +161,63 @@ export default function Login() {
           </div>
         )}
 
-        {/* Formulario de Iniciar Sesión */}
         {pestañaActiva === 'login' && (
-          <form className="form active" onSubmit={manejarLogin}>
-            <h2>Bienvenidos</h2>
-            <input type="email" name="email" placeholder="Email" required />
-            <input type="password" name="contrasena" placeholder="Contraseña" minLength={8} required />
+          <form className="form active" onSubmit={manejarLogin} aria-label="formulario de inicio de sesión">
+            <h1>Bienvenidos</h1>
+            <input type="email" name="email" aria-label="correo electrónico" placeholder="Email" required />
+            <input type="password" name="contrasena" aria-label="contraseña" placeholder="Contraseña" minLength={8} required />
             <button type="submit" className="btn" disabled={cargando}>
-              {cargando ? 'Ingresando...' : 'Ingresar'}
+              {cargando ? 'ingresando...' : 'Ingresar'}
             </button>
-            <p className="link">¿No tienes cuenta? <span onClick={() => { setPestañaActiva('register'); setMensaje(null); }}>Regístrate aquí</span></p>
-            <p className="link"><span onClick={() => { setPestañaActiva('forgot'); setMensaje(null); }}>¿Olvidaste tu contraseña?</span></p>
+            <p className="link">¿No tienes cuenta? <span role="button" tabIndex="0" onKeyDown={(e) => e.key === 'Enter' && setPestañaActiva('register')} onClick={() => { setPestañaActiva('register'); setMensaje(null); }}>Regístrate aquí</span></p>
+            <p className="link"><span role="button" tabIndex="0" onKeyDown={(e) => e.key === 'Enter' && setPestañaActiva('forgot')} onClick={() => { setPestañaActiva('forgot'); setMensaje(null); }}>¿Olvidaste tu contraseña?</span></p>
           </form>
         )}
 
-        {/* Formulario de Registro */}
         {pestañaActiva === 'register' && (
-          <form className="form active" onSubmit={manejarRegistro}>
-            <h2>Crear cuenta</h2>
-            <input type="text" name="nombre" placeholder="Nombre completo" required />
-            <input type="email" name="email" placeholder="Email" required />
-            <input type="password" name="contrasena" placeholder="Contraseña (Mín. 8 caracteres)" minLength={8} required />
-            <input type="tel" name="telefono" placeholder="Teléfono (opcional, solo números)" pattern="^[0-9]*$" />
-            <input type="text" name="direccion" placeholder="Dirección" />
+          <form className="form active" onSubmit={manejarRegistro} aria-label="formulario de registro">
+            <h1>Crear cuenta</h1>
+            <input type="text" name="nombre" aria-label="nombre completo" placeholder="Nombre completo" required />
+            <input type="email" name="email" aria-label="correo electrónico" placeholder="Email" required />
+            <input type="password" name="contrasena" aria-label="crear contraseña" placeholder="Contraseña (Mín. 8 caracteres)" minLength={8} required />
+            <input type="tel" name="telefono" aria-label="teléfono opcional" placeholder="Teléfono (opcional, solo números)" pattern="^[0-9]*$" />
+            <input type="text" name="direccion" aria-label="dirección opcional" placeholder="Dirección (opcional)" />
             <button type="submit" className="btn" disabled={cargando}>
-              {cargando ? 'Registrando...' : 'Registrarse'}
+              {cargando ? 'registrando...' : 'Registrarse'}
             </button>
-            <p className="link" onClick={() => { setPestañaActiva('login'); setMensaje(null); }}>¿Ya tienes cuenta? Inicia sesión</p>
+            <p className="link" role="button" tabIndex="0" onKeyDown={(e) => e.key === 'Enter' && setPestañaActiva('login')} onClick={() => { setPestañaActiva('login'); setMensaje(null); }}>¿Ya tienes cuenta? Inicia sesión</p>
           </form>
         )}
 
-        {/* Formulario de Solicitud de Recuperación por Correo */}
         {pestañaActiva === 'forgot' && (
-          <form className="form active" onSubmit={manejarSolicitudRecuperacion}>
-            <h2>Recuperar Contraseña</h2>
+          <form className="form active" onSubmit={manejarSolicitudRecuperacion} aria-label="formulario de recuperación de contraseña">
+            <h1>Recuperar Contraseña</h1>
             <p className="subtitle text-center mb-3" style={{ fontSize: '13px', color: '#ccc' }}>
-              Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
+              ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
             </p>
-            <input type="email" name="email" placeholder="Ingresa tu Email registrado" required />
+            <input type="email" name="email" aria-label="correo electrónico registrado" placeholder="Ingresa tu Email registrado" required />
             <button type="submit" className="btn" disabled={cargando}>
-              {cargando ? 'Enviando...' : 'Enviar Enlace'}
+              {cargando ? 'enviando...' : 'Enviar Enlace'}
             </button>
-            <p className="link" onClick={() => { setPestañaActiva('login'); setMensaje(null); }}>Volver al inicio de sesión</p>
+            <p className="link" role="button" tabIndex="0" onKeyDown={(e) => e.key === 'Enter' && setPestañaActiva('login')} onClick={() => { setPestañaActiva('login'); setMensaje(null); }}>Volver al inicio de sesión</p>
           </form>
         )}
 
-        {/* Formulario de Nueva Contraseña (Cuando viene del enlace del correo) */}
         {pestañaActiva === 'reset' && (
-          <form className="form active" onSubmit={manejarRestablecer}>
-            <h2>Nueva Contraseña</h2>
+          <form className="form active" onSubmit={manejarRestablecer} aria-label="formulario de nueva contraseña">
+            <h1>Nueva Contraseña</h1>
             <p className="subtitle text-center mb-3" style={{ fontSize: '13px', color: '#ccc' }}>
-              Crea una nueva contraseña para tu cuenta.
+              crea una nueva contraseña para tu cuenta.
             </p>
-            <input type="password" name="nuevaContrasena" placeholder="Nueva Contraseña (Mín. 8 caracteres)" minLength={8} required />
+            <input type="password" name="nuevaContrasena" aria-label="escribir nueva contraseña" placeholder="Nueva Contraseña (Mín. 8 caracteres)" minLength={8} required />
             <button type="submit" className="btn" disabled={cargando}>
-              {cargando ? 'Guardando...' : 'Actualizar Contraseña'}
+              {cargando ? 'guardando...' : 'Actualizar Contraseña'}
             </button>
           </form>
         )}
 
         <AlertaMensaje mensaje={mensaje} esError={mensajeError} />
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
