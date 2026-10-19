@@ -16,7 +16,7 @@ export default function CarruselProductos({ productos, cargando, error, onVerDet
 
   // retornos tempranos para controlar las fases de carga y error
   if (cargando) {
-    return <div className="text-center w-100 py-4 text-muted" role="status">cargando colección...</div>;
+    return <div className="text-center w-100 py-4 text-white" role="status">cargando colección...</div>;
   }
 
   if (error) {
@@ -24,7 +24,7 @@ export default function CarruselProductos({ productos, cargando, error, onVerDet
   }
 
   if (productos.length === 0) {
-    return <div className="text-center w-100 py-4 text-muted" role="status">no hay prendas disponibles en esta colección por el momento.</div>;
+    return <div className="text-center w-100 py-4 text-white" role="status">no hay prendas disponibles en esta colección por el momento.</div>;
   }
 
   return (
