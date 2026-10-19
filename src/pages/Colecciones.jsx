@@ -1,4 +1,4 @@
-// Página Colecciones, tres carruseles con las colecciones por categoría
+// página de colecciones, renderiza los catálogos separados por categoría
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useProductos from '../hooks/useProductos.js';
@@ -12,20 +12,28 @@ export default function Colecciones() {
   const mujer = useProductos('mujer');
   const unisex = useProductos('unisex');
 
-  // Obtenemos los valores actuales de los filtros
+  // traemos el estado global de los filtros de la barra superior
   const { busqueda, precioMax } = useFiltros();
-
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
-  // Aplicamos los filtros de búsqueda y precio a cada lista de productos
+  // ejecutamos el filtrado para cada categoría independientemente
   const productosHombreFiltrados = filtrarProductos(hombre.productos, busqueda, precioMax);
   const productosMujerFiltrados = filtrarProductos(mujer.productos, busqueda, precioMax);
   const productosUnisexFiltrados = filtrarProductos(unisex.productos, busqueda, precioMax);
 
   return (
-    <>
-      <section className="catalog">
-        <Link to="/hombre"><h2>Hombres</h2></Link>
+    <main>
+      {/* seo técnico nativo de react 19 para la vista completa */}
+      <title>Colecciones de Ropa Urbana | Americanoshh</title>
+      <meta name="description" content="explora nuestras colecciones divididas por categoría. moda streetwear para hombre, mujer y estilos unisex." />
+      
+      {/* encabezado principal oculto para mantener el diseño visual pero informar a google */}
+      <h1 className="sr-only">Colecciones Americanoshh</h1>
+
+      <section className="catalog" aria-labelledby="titulo-hombre">
+        <Link to="/hombre" aria-label="ver todo el catálogo para hombres">
+          <h2 id="titulo-hombre">Hombres</h2>
+        </Link>
         <CarruselProductos 
           productos={productosHombreFiltrados} 
           cargando={hombre.cargando} 
@@ -34,8 +42,10 @@ export default function Colecciones() {
         />
       </section>
 
-      <section className="catalog">
-        <Link to="/mujer"><h2>Mujeres</h2></Link>
+      <section className="catalog" aria-labelledby="titulo-mujer">
+        <Link to="/mujer" aria-label="ver todo el catálogo para mujeres">
+          <h2 id="titulo-mujer">Mujeres</h2>
+        </Link>
         <CarruselProductos 
           productos={productosMujerFiltrados} 
           cargando={mujer.cargando} 
@@ -44,8 +54,10 @@ export default function Colecciones() {
         />
       </section>
 
-      <section className="catalog">
-        <Link to="/unisex"><h2>Unisex</h2></Link>
+      <section className="catalog" aria-labelledby="titulo-unisex">
+        <Link to="/unisex" aria-label="ver todo el catálogo unisex">
+          <h2 id="titulo-unisex">Unisex</h2>
+        </Link>
         <CarruselProductos 
           productos={productosUnisexFiltrados} 
           cargando={unisex.cargando} 
@@ -57,6 +69,6 @@ export default function Colecciones() {
       {productoSeleccionado && (
         <ModalProducto producto={productoSeleccionado} onCerrar={() => setProductoSeleccionado(null)} />
       )}
-    </>
+    </main>
   );
 }

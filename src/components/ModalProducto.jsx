@@ -1,50 +1,89 @@
-// Modal de detalles del producto
-// pero manejado con estado React (ya no manipula el DOM a mano).
+// ventana modal para previsualizar los detalles del producto antes de comprar
 import { useEffect, useState } from 'react';
 import './ModalProducto.css';
 
-const WHATSAPP_URL = 'https://wa.me/573124363561'; // número de la marca (en este caso mi numero de cel)
+const WHATSAPP_URL = 'https://wa.me/573124363561';
 
 export default function ModalProducto({ producto, onCerrar }) {
-  //Estado local para rastrear la talla actualmente elegida por el usuario
+  // guarda la talla que el usuario clica en el modal
   const [tallaSeleccionada, setTallaSeleccionada] = useState(null);
-  //Valida si el producto trae un arreglo de tallas válido desde la base de datos.
-  //Si no existe o viene vacio, asigna un listado estandar por defecto
+  
+  // asegura un listado de tallas aunque la base de datos falle
   const tallas = Array.isArray(producto?.tallas) && producto.tallas.length > 0 ? producto.tallas : ['XS', 'S', 'M', 'L', 'XL'];
 
-  // Cierra el modal con la tecla Escape
+  // permite cerrar el modal pulsando esc en el teclado
   useEffect(() => {
     const manejarTecla = (e) => {
       if (e.key === 'Escape') onCerrar();
     };
     window.addEventListener('keydown', manejarTecla);
-    //Limpieza del event listener al desmontar el componente para evitar fugas de memoria
     return () => window.removeEventListener('keydown', manejarTecla);
   }, [onCerrar]);
 
-  //si no hay producto selecionado, el componente no renderiza nada en el DOM
   if (!producto) return null;
-  //Formatea el valor numerico a moneda
   const precioFormateado = `$${parseInt(producto.precio, 10).toLocaleString('es-CO')}`;
 
+  // seo avanzado: construimos la metadata estructurada para los rich snippets de google
+  const productSchema = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": producto.titulo,
+    "image": producto.imagen_url,
+    "description": producto.descripcion || "prenda de estilo urbano americanoshh",
+    "brand": {
+      "@type": "Brand",
+      "name": "Americanoshh"
+    },
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": "COP",
+      "price": producto.precio,
+      "availability": "https://schema.org/InStock",
+      "url": window.location.href
+    }
+  };
+
   return (
-    <div id="product-modal" className="modal show" onClick={(e) => e.target === e.currentTarget && onCerrar()}>
+    <div 
+      id="product-modal" 
+      className="modal show" 
+      role="dialog" 
+      aria-modal="true" 
+      aria-labelledby="modal-titulo"
+      onClick={(e) => e.target === e.currentTarget && onCerrar()}
+    >
+      {/* inyectamos el schema invisiblemente en el html del modal */}
+      <script type="application/ld+json">
+        {JSON.stringify(productSchema)}
+      </script>
+
       <div className="modal-content">
-        <span className="close-modal" onClick={onCerrar}>&times;</span>
+        {/* el aspa de cerrar ahora es accesible por teclado */}
+        <span 
+          className="close-modal" 
+          onClick={onCerrar} 
+          role="button" 
+          tabIndex="0" 
+          aria-label="cerrar ventana de producto"
+          onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onCerrar()}
+        >
+          &times;
+        </span>
 
         <div className="modal-body">
           <div className="modal-left">
             <div className="image-container">
-              <img src={producto.imagen_url} alt={producto.titulo} />
+              <img src={producto.imagen_url} alt={`vista detallada de ${producto.titulo}`} />
             </div>
           </div>
 
           <div className="modal-right">
-            <h1 className="urban-title">{producto.titulo}</h1>
-            <p className="modal-stock">En stock</p>
-            <p className="modal-price">{precioFormateado}</p>
+            {/* id dinámico para el aria-labelledby del contenedor del modal */}
+            <h2 id="modal-titulo" className="urban-title">{producto.titulo}</h2>
+            <p className="modal-stock" aria-live="polite">En stock</p>
+            <p className="modal-price" aria-label={`precio: ${precioFormateado}`}>{precioFormateado}</p>
 
-            <div className="modal-sizes">
+            <div className="modal-sizes" role="group" aria-label="selección de talla">
               <h3 className="urban-subtitle">Tallas</h3>
               <div className="sizes-grid">
                 {tallas.map((talla) => (
@@ -53,6 +92,7 @@ export default function ModalProducto({ producto, onCerrar }) {
                     type="button"
                     className={`size-btn ${tallaSeleccionada === talla ? 'seleccionada' : ''}`}
                     onClick={() => setTallaSeleccionada(talla)}
+                    aria-pressed={tallaSeleccionada === talla}
                   >
                     {talla}
                   </button>
@@ -60,13 +100,13 @@ export default function ModalProducto({ producto, onCerrar }) {
               </div>
             </div>
 
-            <button type="button" className="btn-buy">
+            <button type="button" className="btn-buy" aria-label="comprar producto a través de whatsapp">
               <span>
                 <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">Compra Ahora</a>
               </span>
             </button>
 
-            <p className="modal-desc">{producto.descripcion || 'Sin descripción disponible.'}</p>
+            <p className="modal-desc">{producto.descripcion || 'sin descripción disponible.'}</p>
           </div>
         </div>
       </div>

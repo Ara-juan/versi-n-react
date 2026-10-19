@@ -1,10 +1,11 @@
-/* Estilos para Página Acerca de  */
-/* Relleno vertical para separar la sección 'Acerca de' del header y footer */
+/* reglas de la página institucional de la marca */
+
+/* separación de la sección respecto al navbar */
 .about {
   padding: 60px 20px;
 }
 
-/* Alineación en dos columnas centradas, imagen de la marca a un lado y texto al otro */
+/* alineación flexbox a dos columnas, imagen a un lado y copy al otro */
 .about-content {
   display: flex;
   align-items: center;
@@ -12,7 +13,7 @@
   gap: 40px;
 }
 
-/* Control del tamaño de la imagen para evitar que se distorsione o supere el ancho de su columna */
+/* restricciones de tamaño para no deformar el logo vectorial */
 .about-logo img {
   width: 100%;
   max-width: 450px;
@@ -21,26 +22,28 @@
   display: block;
 }
 
-/* Restringe el ancho del bloque de lectura para garantizar una buena legibilidad */
+/* limitamos el ancho de lectura para no cansar al usuario */
 .about-text {
   max-width: 500px;
 }
 
-/* Subrayado de color azul para destacar el título principal de la sección */
-.about-text h2 {
+/* decoración de subrayado azul para el encabezado principal */
+.about-text h1 {
   margin-bottom: 20px;
-  border-bottom: 2px solid #007BFF;
+  border-bottom: 2px solid var(--bs-primary, #4da3ff); /* ajustado al azul accesible */
   display: inline-block;
 }
 
 .about-text p {
   margin: 10px 0;
   font-size: 16px;
+  color: #e0e0e0; /* mejor contraste sobre fondos negros */
 }
 
-.about-text h3 {
+.about-text h2 {
   margin-top: 30px;
   margin-bottom: 10px;
+  font-size: 1.5rem;
 }
 
 .socials {
@@ -51,20 +54,22 @@
 
 .socials li {
   margin: 8px 0;
+  color: #ccc;
 }
 
-/* Color neón destacado para diferenciar claramente los enlaces de contacto del resto del texto */
+/* cambiamos a un azul claro vibrante para mantener la coherencia y mejorar la legibilidad */
 .socials a {
-  color: #00ffcc;
+  color: var(--bs-primary, #4da3ff);
   text-decoration: none;
+  font-weight: bold;
 }
 
 .socials a:hover {
   text-decoration: underline;
+  color: #338cf0;
 }
 
-/*Ajustes para pantallas pequeñas
-Pasa el diseño de 2 columnas paralelas a 1 sola columna vertical con texto centrado*/
+/* ajustes para una sola columna en pantallas de móviles */
 @media (max-width: 768px) {
   .about {
     padding: 30px 15px;
@@ -76,13 +81,12 @@ Pasa el diseño de 2 columnas paralelas a 1 sola columna vertical con texto cent
     gap: 20px;
   }
 
-  /* Reduce el tamaño del logo en pantallas móviles para no ocupar toda la pantalla */
   .about-logo img {
     max-width: 250px;
     margin: 0 auto;
   }
 
-  .about-text h2 {
+  .about-text h1 {
     font-size: 1.5rem;
   }
 }
