@@ -12,6 +12,7 @@
   justify-content: center;
 }
 
+/* ajusta el tamaño del logo y lo centra arriba del formulario */
 .login-container .logo {
   width: 150px;
   height: auto;
@@ -28,6 +29,7 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
+/* titulo del formulario en blanco y con margen */
 .form-box h2 {
   font-size: 22px;
   margin-bottom: 15px;
@@ -43,6 +45,7 @@
   overflow: hidden; /* mantiene las esquinas redondeadas en los botones internos */
 }
 
+/* estilo base de las pestañas repartidas por igual */
 .tab {
   flex: 1; /* hace que ambas pestañas ocupen el mismo ancho */
   padding: 10px;
@@ -54,12 +57,13 @@
   transition: background 0.3s ease;
 }
 
-/* resalta con el azul accesible la pestaña actualmente activa y usa texto oscuro para contraste */
+/* resalta la pestaña activa en azul con texto oscuro */
 .tab.active {
   background: var(--bs-primary, #4da3ff);
   color: #111;
 }
 
+/* campos de entrada de texto al ancho completo */
 .form input {
   width: 100%;
   padding: 10px;
@@ -69,7 +73,7 @@
   box-sizing: border-box;
 }
 
-/* botón de acción principal optimizado para accesibilidad */
+/* boton de accion azul con texto oscuro */
 .form .btn {
   width: 100%;
   padding: 12px;
@@ -84,10 +88,12 @@
   transition: background 0.3s ease;
 }
 
+/* cambia a azul mas oscuro al pasar el cursor por el boton */
 .form .btn:hover {
   background: #338cf0;
 }
 
+/* texto secundario con enlace en la parte inferior */
 .link {
   font-size: 14px;
   margin-top: 15px;
@@ -97,10 +103,12 @@
   color: #e0e0e0;
 }
 
+/* resalta el texto clickable en verde neon */
 .link span {
   color: #00ffcc;
 }
 
+/* subraya la palabra clave cuando pasas el mouse encima */
 .link span:hover {
   text-decoration: underline;
 }
