@@ -1,4 +1,4 @@
-/* base de nuestra barra de navegación superior */
+/* base de la barra de navegación superior */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -18,11 +18,13 @@
   background: rgba(0, 0, 0, 0.85);
 }
 
+/* tamaño del texto del logo */
 .logo {
   font-size: 22px;
   font-weight: bold;
 }
 
+/* ajusta el tamaño de la imagen del logo */
 .logo img {
   width: 120px;
   height: auto;
@@ -38,6 +40,7 @@
   padding-left: 0;
 }
 
+/* estilo de los textos del menu en blanco y sin subrayado */
 .nav-links li a {
   color: white;
   text-decoration: none;
@@ -45,12 +48,12 @@
   transition: color 0.2s ease;
 }
 
-/* cambiamos el azul oscuro por uno más claro (#4da3ff) para no cansar la vista en fondos negros */
+/* cambia a azul claro cuando pasas el mouse encima para no cansar la vista */
 .nav-links li a:hover {
   color: var(--bs-primary, #4da3ff);
 }
 
-/* iluminamos la sección donde está el usuario actualmente */
+/* resalta en azul el enlace de la seccion donde esta parado el usuario */
 .nav-links li a.active {
   color: #4da3ff;
 }
@@ -62,6 +65,7 @@
   flex-wrap: wrap;
 }
 
+/* estilo base para las cajas de texto y listas desplegables */
 .search-bar select,
 .search-bar input {
   padding: 6px 10px;
@@ -71,13 +75,14 @@
   font-size: 14px;
 }
 
+/* fondo oscuro y cursor de mano para el selector de opciones */
 .search-bar select {
   background-color: #222;
   color: white;
   cursor: pointer;
 }
 
-/* reborde azul claro al hacer clic en el selector */
+/* pone un borde azul claro cuando haces clic en el selector */
 .search-bar select:focus {
   border: 1px solid var(--bs-primary, #4da3ff);
 }
@@ -109,6 +114,7 @@
     position: relative;
   }
 
+  /* centra los enlaces del menu si se acomodan en varias filas */
   .nav-links {
     flex-wrap: wrap;
     justify-content: center;
@@ -121,6 +127,7 @@
     justify-content: center;
   }
 
+  /* ajusta el tamaño maximo de la caja de busqueda */
   .search-bar input {
     flex: 1;
     max-width: 180px;
