@@ -7,6 +7,7 @@
   width: 100%;
 }
 
+/* la tira de productos en horizontal con scroll suave y sin barra visible */
 .products {
   display: flex;
   gap: 20px;
@@ -18,11 +19,12 @@
   scrollbar-width: none;
 }
 
+/* oculta la barra de scroll en chrome safari y navegadores similares */
 .products::-webkit-scrollbar {
   display: none;
 }
 
-/* ancho fijo para las tarjetas en el carrusel */
+/* le da un ancho fijo a cada tarjeta para que no se aplasten */
 .products .card {
   flex-shrink: 0;
   width: 270px;
@@ -55,10 +57,12 @@
   transition: background 0.3s ease;
 }
 
+/* cambia el color de la flecha cuando pasas el mouse encima */
 .arrow:hover {
   background: rgba(51, 140, 240, 1); /* rgba basado en #338cf0 */
 }
 
+/* ubica las flechas izquierda y derecha hacia afuera */
 .left-arrow { left: -40px; }
 .right-arrow { right: -40px; }
 
