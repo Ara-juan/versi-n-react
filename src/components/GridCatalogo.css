@@ -5,7 +5,7 @@
   margin: 0 auto;
 }
 
-/* subrayado decorativo del título que usa la nueva variable de color primario accesible */
+/* titulos en blanco con una linea azul abajo para darle estilo */
 .catalog h1, .catalog h2 {
   margin-bottom: 20px;
   border-bottom: 2px solid var(--bs-primary, #4da3ff);
@@ -13,7 +13,7 @@
   color: white;
 }
 
-/* usamos css grid en lugar de flexbox para controlar exactamente las columnas */
+/* organizacion en grilla con tres columnas parejas para pantallas grandes */
 .catalog-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3 productos por fila en pantallas grandes */
@@ -48,16 +48,19 @@
   margin-bottom: 10px;
 }
 
+/* nombre del producto centrado con su margen */
 .card h3 {
   margin: 10px 0;
   font-size: 1.1rem;
 }
 
+/* precio del producto destacado en verde y negrita */
 .price {
   color: #00ffcc;
   font-weight: bold;
 }
 
+/* descripcion con letra gris mas discreta */
 .desc {
   font-size: 14px;
   color: #ccc;
