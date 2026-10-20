@@ -9,7 +9,7 @@
   backdrop-filter: brightness(0.9);
 }
 
-/* clase de utilidad para ocultar textos visualmente pero dejarlos visibles para google y lectores de pantalla */
+/* oculta texto de la pantalla pero se lo muestra a google y lectores de pantalla */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -21,12 +21,14 @@
   border: 0;
 }
 
+/* ajusta el tamaño del logo principal y le da margen abajo */
 .inicio-container .logo {
   width: 180px;
   height: auto;
   margin-bottom: 20px;
 }
 
+/* slogan principal en mayusculas y letra blanca */
 .slogan {
   font-size: 22px;
   font-weight: bold;
@@ -36,7 +38,7 @@
   color: white;
 }
 
-/* flexbox para centrar botones y textos verticalmente */
+/* agrupa los botones en columna y los centra */
 .buttons {
   display: flex;
   flex-direction: column;
@@ -46,21 +48,24 @@
   width: 100%;
 }
 
+/* texto informativo entre los botones en gris claro */
 .buttons p {
   margin: 12px 0 6px 0;
   font-size: 14px;
   text-align: center;
-  color: #e0e0e0; /* un gris muy claro para mejor contraste sobre el fondo oscuro */
+  color: #e0e0e0; 
 }
 
+/* quita la linea inferior de los enlaces */
 .buttons a {
   text-decoration: none;
   display: inline-block;
 }
 
+/* boton llamativo en azul */
 .buttons .btn {
   background-color: var(--bs-primary, #4da3ff); /* aplicamos el azul claro del navbar */
-  color: #111; /* texto oscuro sobre botón claro es la regla de oro para la accesibilidad */
+  color: #f2eded; 
   font-weight: bold;
   border: none;
   padding: 12px 24px;
@@ -72,19 +77,23 @@
   min-width: 140px; /* ancho uniforme para ambos botones */
 }
 
+/* azul un poco mas oscuro al pasar el raton por el boton */
 .buttons .btn:hover {
   background-color: #338cf0;
 }
 
+/* enlaces del pie de pagina en blanco sin subrayado */
 .footer-link {
   color: white;
   text-decoration: none;
 }
 
+/* cambia al azul principal al pasar el cursor */
 .footer-link:hover {
-  color: #4da3ff; /* usamos el mismo color temático al pasar el mouse */
+  color: #4da3ff; 
 }
 
+/* pie de pagina en texto pequeño subrayado */
 .footer {
   font-size: 14px;
   margin-top: 20px;
